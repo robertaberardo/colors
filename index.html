@@ -719,7 +719,13 @@
     color: #666;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin-bottom: 16px;
+    margin-bottom: 6px;
+  }
+  .adjust-desc {
+    font-size: 11px;
+    color: #444;
+    line-height: 1.5;
+    margin-bottom: 14px;
   }
 
   .slider-row {
@@ -1128,7 +1134,7 @@
     </button>
     <button id="contrast-btn">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M12 3a9 9 0 0 1 0 18" fill="currentColor" stroke="none" opacity="0.4"/></svg>
-      Contrast
+      Spread
     </button>
     <div class="bar-sep"></div>
     <button id="export-btn">
@@ -1168,31 +1174,8 @@
 </div>
 
 <div id="contrast-panel">
-  <div class="adjust-title">Contrast</div>
-  <div class="dir-group">
-    <button class="dir-btn active" data-dir="sym">
-      <svg viewBox="0 0 28 16">
-        <line x1="14" y1="8" x2="4"  y2="8"/><polyline points="7,4 3,8 7,12"/>
-        <line x1="14" y1="8" x2="24" y2="8"/><polyline points="21,4 25,8 21,12"/>
-        <line x1="14" y1="3" x2="14" y2="13" stroke-dasharray="2 2"/>
-      </svg>
-      <span class="dir-label">Symmetric</span>
-    </button>
-    <button class="dir-btn" data-dir="lr">
-      <svg viewBox="0 0 28 16">
-        <line x1="3" y1="8" x2="22" y2="8"/><polyline points="19,4 25,8 19,12"/>
-        <line x1="3" y1="4"  x2="3"  y2="12" stroke-width="3"/>
-      </svg>
-      <span class="dir-label">Left → Right</span>
-    </button>
-    <button class="dir-btn" data-dir="rl">
-      <svg viewBox="0 0 28 16">
-        <line x1="25" y1="8" x2="6" y2="8"/><polyline points="9,4 3,8 9,12"/>
-        <line x1="25" y1="4" x2="25" y2="12" stroke-width="3"/>
-      </svg>
-      <span class="dir-label">Right → Left</span>
-    </button>
-  </div>
+  <div class="adjust-title">Spread</div>
+  <p class="adjust-desc">Push similar colors apart so every pair stays perceptually distinct. Only touches lightness — hue is preserved.</p>
   <div class="slider-row">
     <div class="slider-header">
       <span class="slider-label">Strength</span>
@@ -2452,7 +2435,6 @@ const contrastBtn   = document.getElementById('contrast-btn');
 const contrastPanel = document.getElementById('contrast-panel');
 let contrastBase    = [];
 let isContrasting   = false;
-let contrastDir     = 'sym';
 
 const conSlider = {
   el:   document.getElementById('sl-con'),
@@ -2460,52 +2442,66 @@ const conSlider = {
   fill: document.getElementById('con-fill'),
 };
 
-function applyContrast(hexes, strength, dir) {
-  const t = strength / 100;
+function applyContrast(hexes, strength) {
   const n = hexes.length;
-  const out = hexes.map(hex => hexToHsl(hex));
+  if (n < 2 || strength === 0) return hexes.slice();
 
-  // Push color at index `i` away from its reference neighbor at index `ref`
-  // — in both hue and lightness — so the two become more distinguishable.
-  function pushApart(i, ref) {
-    const [rh, , rl] = out[ref];
-    const [h, s, l]  = out[i];
+  const okl = hexes.map(h => hexToOklch(h));
+  const L   = okl.map(c => c[0]);
+  // Oklab a,b components — fixed (hue/chroma never change)
+  const ab  = okl.map(([, C, H]) => {
+    const r = H * Math.PI / 180;
+    return [C * Math.cos(r), C * Math.sin(r)];
+  });
 
-    const dh = ((h - rh + 540) % 360) - 180; // signed, –180 to 180
-    const dl = l - rl;
+  // Compute all-pairs Oklab distances to derive an adaptive target.
+  // Using all pairs (not just adjacent) so qualitative palettes also benefit.
+  const dists = [];
+  for (let i = 0; i < n; i++)
+    for (let j = i + 1; j < n; j++) {
+      const dL = L[i] - L[j];
+      const [a1, b1] = ab[i], [a2, b2] = ab[j];
+      dists.push(Math.sqrt(dL * dL + (a1 - a2) ** 2 + (b1 - b2) ** 2));
+    }
+  dists.sort((a, b) => a - b);
+  const median = dists[Math.floor(dists.length / 2)];
 
-    // When colors are already very close, give them a small default push
-    // so we still separate them even if they nearly match.
-    const hDir = Math.abs(dh) < 1 ? 1            : Math.sign(dh);
-    const lDir = Math.abs(dl) < 2 ? (l > 50 ? 1 : -1) : Math.sign(dl);
+  // At strength=100: push all pairs below 1.5× median up to that level.
+  // Pairs already above the threshold are untouched.
+  const target = median * 1.5 * (strength / 100);
 
-    out[i] = [
-      (h + hDir * (Math.abs(dh) * 0.4 + 18) * t + 360) % 360,
-      Math.min(100, s + t * 8),
-      Math.max(3, Math.min(97, l + lDir * (Math.abs(dl) * 0.4 + 10) * t)),
-    ];
+  // Multi-pass constraint satisfaction: fix violating pairs, let cascade propagate.
+  for (let pass = 0; pass < 30; pass++) {
+    let changed = false;
+
+    for (let i = 0; i < n; i++) {
+      for (let j = i + 1; j < n; j++) {
+        const [a1, b1] = ab[i], [a2, b2] = ab[j];
+        const dab2 = (a1 - a2) ** 2 + (b1 - b2) ** 2;
+        if (dab2 >= target * target) continue;
+
+        const neededDL = Math.sqrt(Math.max(0, target * target - dab2));
+        const currentDL = Math.abs(L[j] - L[i]);
+        if (currentDL >= neededDL) continue;
+
+        const deficit = neededDL - currentDL;
+        const sign    = L[i] <= L[j] ? 1 : -1;
+        L[i] = Math.max(0.03, Math.min(0.97, L[i] - sign * deficit * 0.5));
+        L[j] = Math.max(0.03, Math.min(0.97, L[j] + sign * deficit * 0.5));
+        changed = true;
+      }
+    }
+
+    if (!changed) break;
   }
 
-  if (dir === 'lr') {
-    // Left swatch is anchor; each swatch is pushed away from the one before it.
-    for (let i = 1; i < n; i++) pushApart(i, i - 1);
-  } else if (dir === 'rl') {
-    // Right swatch is anchor; each swatch is pushed away from the one after it.
-    for (let i = n - 2; i >= 0; i--) pushApart(i, i + 1);
-  } else {
-    // Symmetric: centre swatch is anchor, effect radiates outward.
-    const mid = Math.floor(n / 2);
-    for (let i = mid - 1; i >= 0; i--) pushApart(i, i + 1);
-    for (let i = mid + 1; i < n; i++) pushApart(i, i - 1);
-  }
-
-  return out.map(([h, s, l]) => hslToHex(h, s, l));
+  return okl.map(([, c, h], i) => oklchToHex(L[i], c, h));
 }
 
 function previewContrast() {
   const strength = +conSlider.el.value;
   const els = document.querySelectorAll('.swatch');
-  const adjusted = applyContrast(contrastBase, strength, contrastDir);
+  const adjusted = applyContrast(contrastBase, strength);
   adjusted.forEach((hex, i) => {
     swatches[i].hex = hex;
     applySwatch(els[i], hex);
@@ -2548,14 +2544,6 @@ conSlider.el.addEventListener('input', () => {
   previewContrast();
 });
 
-document.querySelectorAll('.dir-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.dir-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    contrastDir = btn.dataset.dir;
-    previewContrast();
-  });
-});
 
 contrastBtn.addEventListener('click', e => {
   e.stopPropagation();
