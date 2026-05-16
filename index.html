@@ -467,6 +467,50 @@
     flex-shrink: 0;
   }
 
+  /* color picker filter row */
+  .pb-color-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 16px 10px;
+    border-bottom: 1px solid #1e1e1e;
+  }
+.pb-color-btn {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid #333;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+    background: conic-gradient(red,yellow,lime,cyan,blue,magenta,red);
+    transition: border-color 150ms;
+  }
+  .pb-color-row.active .pb-color-btn { border-color: #fff; }
+  .pb-tol-wrap {
+    flex: 1;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms;
+  }
+  .pb-color-row.active .pb-tol-wrap {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .pb-color-clear {
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0 2px;
+    opacity: 0;
+    pointer-events: none;
+    transition: color 150ms, opacity 150ms;
+  }
+  .pb-color-row.active .pb-color-clear { opacity: 1; pointer-events: auto; }
+  .pb-color-clear:hover { color: #ccc; }
+
   #pb-list { overflow-y: auto; flex: 1; }
   #pb-list::-webkit-scrollbar { width: 4px; }
   #pb-list::-webkit-scrollbar-track { background: transparent; }
@@ -1110,6 +1154,16 @@
       <span class="chip-dot" style="background:#f4845f"></span>diverging
     </button>
   </div>
+  <div class="pb-color-row" id="pb-color-row">
+    <button class="pb-color-btn" id="pb-color-btn" title="Filter by color"></button>
+    <div class="pb-tol-wrap">
+      <div class="slider-track">
+        <div class="slider-fill" id="pb-tol-fill"></div>
+        <input type="range" class="adj-slider" id="pb-tol-slider" min="5" max="40" value="20">
+      </div>
+    </div>
+    <button class="pb-color-clear" id="pb-color-clear" title="Clear">×</button>
+  </div>
   <div id="pb-list"></div>
 </div>
 
@@ -1379,6 +1433,17 @@ function hexToOklch(hex) {
   let H = Math.atan2(bv, a) * 180 / Math.PI;
   if (H < 0) H += 360;
   return [L, C, H]; // L: 0–1, C: 0–~0.4, H: 0–360
+}
+
+// Perceptually uniform color distance (Oklab Euclidean)
+function oklabDist(hex1, hex2) {
+  const [L1,C1,H1] = hexToOklch(hex1);
+  const [L2,C2,H2] = hexToOklch(hex2);
+  const r1 = H1*Math.PI/180, r2 = H2*Math.PI/180;
+  const dL = L1-L2;
+  const da = C1*Math.cos(r1) - C2*Math.cos(r2);
+  const db = C1*Math.sin(r1) - C2*Math.sin(r2);
+  return Math.sqrt(dL*dL + da*da + db*db);
 }
 
 function hexToHsl(hex) {
@@ -1766,6 +1831,8 @@ const pbList             = document.getElementById('pb-list');
 let pbOpen        = false;
 let pbQuery       = '';
 let pbKinds       = new Set(['q', 's', 'd']);  // active kind filters
+let pbColorPick   = null;   // '#rrggbb' or null (color filter inactive)
+let pbColorTol    = 0.20;   // Oklab distance threshold (0–0.5)
 let pbOffset      = 0;
 const PB_BATCH    = 80;
 let activePalette = null; // null = using a generate mode
@@ -1846,13 +1913,18 @@ function buildPbItems(filtered, append) {
 
 function renderPbList(append) {
   const q = pbQuery.toLowerCase();
-  const filtered = PYPALETTES.filter(([name, , tagStr]) => {
+  const filtered = PYPALETTES.filter(([name, hexStr, tagStr]) => {
     if (q && !name.toLowerCase().includes(q)) return false;
     // tag filter: no tags = always show; otherwise at least one tag must be in active set
     if (tagStr) {
       // 'dis' (discrete) is treated as synonymous with 'q' (qualitative)
       const tags = tagStr.split(',').map(t => t === 'dis' ? 'q' : t);
       if (!tags.some(t => pbKinds.has(t))) return false;
+    }
+    // color picker filter: skip when no color selected
+    if (pbColorPick) {
+      const hexes = hexStr.split(',');
+      if (!hexes.some(h => oklabDist(pbColorPick, '#' + h) <= pbColorTol)) return false;
     }
     return true;
   });
@@ -1885,6 +1957,7 @@ function closePaletteBrowser() {
   paletteBrowser.classList.remove('open');
   paletteSelectorBtn.classList.remove('active');
   pbOpen = false;
+  if (cpOnChange) closePicker();
 }
 
 // infinite scroll
@@ -1918,6 +1991,46 @@ document.querySelectorAll('.pb-filter-chip').forEach(chip => {
     }
     renderPbList(false);
   });
+});
+
+// Color picker filter
+const pbColorBtn   = document.getElementById('pb-color-btn');
+const pbColorRowEl = document.getElementById('pb-color-row');
+const pbColorClear = document.getElementById('pb-color-clear');
+const pbTolSlider  = document.getElementById('pb-tol-slider');
+const pbTolFill    = document.getElementById('pb-tol-fill');
+
+function updatePbTolFill() {
+  const pct = (pbTolSlider.value - 5) / (40 - 5) * 100;
+  pbTolFill.style.cssText = `left:0; width:${pct}%`;
+}
+updatePbTolFill();
+
+pbColorBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  // toggle: if picker is already open for the filter, close it (keep filter applied)
+  if (cpEl.classList.contains('open') && cpOnChange) { closePicker(); return; }
+  openPicker(pbColorPick || '#e05555', pbColorBtn, hex => {
+    pbColorPick = hex;
+    pbColorBtn.style.background = hex;
+    pbColorRowEl.classList.add('active');
+    updatePbTolFill();
+    renderPbList(false);
+  });
+});
+
+pbTolSlider.addEventListener('input', () => {
+  pbColorTol = pbTolSlider.value / 100;
+  updatePbTolFill();
+  if (pbColorPick) renderPbList(false);
+});
+
+pbColorClear.addEventListener('click', () => {
+  pbColorPick = null;
+  pbColorBtn.style.background = '';
+  pbColorRowEl.classList.remove('active');
+  closePicker();
+  renderPbList(false);
 });
 
 paletteSelectorBtn.addEventListener('click', e => {
@@ -2168,6 +2281,7 @@ Object.values(sliders).forEach(s => updateFill(s));
 // ── Color picker ─────────────────────────────────────────────────────────────
 
 let cpIdx      = null;
+let cpOnChange = null;  // callback(hex) for non-swatch uses of the picker
 let cpH = 0, cpS = 100, cpV = 100, cpA = 100;
 let cpDragging = false;
 
@@ -2222,7 +2336,9 @@ function cpUpdateUI(skipHex) {
     cpTextEl.value = `rgba(${r}, ${g}, ${b}, ${(cpA / 100).toFixed(2)})`;
   cpTextEl.classList.remove('invalid');
 
-  if (cpIdx !== null && !isAdjusting && !isContrasting) {
+  if (cpOnChange) {
+    cpOnChange(hex);
+  } else if (cpIdx !== null && !isAdjusting && !isContrasting) {
     swatches[cpIdx].hex = hex;
     applySwatch(document.querySelectorAll('.swatch')[cpIdx], hex);
     updateURL();
@@ -2295,9 +2411,16 @@ document.getElementById('cp-copy-rgba').addEventListener('click', () => {
   showToast('RGBA copied!');
 });
 
-function openPicker(idx, triggerEl) {
-  cpIdx = idx;
-  [cpH, cpS, cpV] = rgbToHsv(...cpHexToRgb(swatches[idx].hex));
+function openPicker(idx, triggerEl, onchange) {
+  // idx can be a swatch index (number) or an initial hex string when using callback mode
+  cpOnChange = onchange || null;
+  if (typeof idx === 'number') {
+    cpIdx = idx;
+    [cpH, cpS, cpV] = rgbToHsv(...cpHexToRgb(swatches[idx].hex));
+  } else {
+    cpIdx = null;
+    [cpH, cpS, cpV] = rgbToHsv(...cpHexToRgb(idx || '#e05555'));
+  }
   cpA = 100;
   cpHueEl.value = cpH;
   cpUpdateUI();
@@ -2315,10 +2438,10 @@ function openPicker(idx, triggerEl) {
   });
 }
 
-function closePicker() { cpEl.classList.remove('open'); cpIdx = null; }
+function closePicker() { cpEl.classList.remove('open'); cpIdx = null; cpOnChange = null; }
 
 document.addEventListener('click', e => {
-  if (cpEl.classList.contains('open') && !cpEl.contains(e.target) && !e.target.closest('.pick-btn'))
+  if (cpEl.classList.contains('open') && !cpEl.contains(e.target) && !e.target.closest('.pick-btn, .pb-color-btn'))
     closePicker();
 });
 cpEl.addEventListener('click', e => e.stopPropagation());
