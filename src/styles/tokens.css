@@ -1,0 +1,84 @@
+/* Design tokens — single source of truth for all visual constants.
+   Import this file first in any stylesheet that needs these values. */
+
+:root {
+  /* ── Layout ─────────────────────────────────────────────────── */
+  --bar-h: 60px;
+
+  /* ── Background scale ───────────────────────────────────────── */
+  --bg-app:       #111;
+  --bg-surface:   #0e0e0e;
+  --bg-panel:     #161616;
+  --bg-raised:    #1a1a1a;
+  --bg-hover:     #1f1f1f;
+  --bg-active:    #202020;
+  --bg-subtle:    #252525;
+
+  /* ── Border scale ───────────────────────────────────────────── */
+  --border-faint:  #1e1e1e;
+  --border-dim:    #222;
+  --border-default:#2a2a2a;
+  --border-mid:    #333;
+  --border-strong: #444;
+
+  /* ── Text scale ─────────────────────────────────────────────── */
+  --text-primary:  #f0f0f0;
+  --text-secondary:#ccc;
+  --text-muted:    #666;
+  --text-faint:    #555;
+  --text-dim:      #444;
+
+  /* ── Control aliases (used in toolbar + buttons) ────────────── */
+  --ctrl-bg:     var(--bg-surface);
+  --ctrl-text:   var(--text-primary);
+  --ctrl-muted:  var(--text-muted);
+  --ctrl-border: var(--border-dim);
+
+  /* ── Overlay / transparency ─────────────────────────────────── */
+  --overlay-dark-text:   rgba(0, 0, 0, 0.85);
+  --overlay-light-text:  rgba(255, 255, 255, 0.9);
+  --overlay-dark-border: rgba(0, 0, 0, 0.18);
+  --overlay-light-border:rgba(255, 255, 255, 0.22);
+  --overlay-dark-bg:     rgba(0, 0, 0, 0.07);
+  --overlay-light-bg:    rgba(255, 255, 255, 0.1);
+
+  /* ── Luma threshold for dark-on-light vs light-on-dark ─────── */
+  --luma-threshold: 0.45;
+
+  /* ── Radius ─────────────────────────────────────────────────── */
+  --radius-sm:    6px;
+  --radius-md:    8px;
+  --radius-lg:    12px;
+  --radius-xl:    16px;
+  --radius-pill:  100px;
+  --radius-full:  50%;
+
+  /* ── Spacing ────────────────────────────────────────────────── */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  12px;
+  --space-lg:  16px;
+  --space-xl:  20px;
+  --space-2xl: 24px;
+
+  /* ── Typography ─────────────────────────────────────────────── */
+  --font-sans:  'DM Sans', sans-serif;
+  --font-mono:  'DM Mono', monospace;
+
+  /* ── Transitions ────────────────────────────────────────────── */
+  --transition:      400ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 150ms ease;
+  --transition-mid:  160ms ease;
+
+  /* ── Z-index scale ──────────────────────────────────────────── */
+  --z-panel:   50;
+  --z-picker:  60;
+  --z-overlay: 100;
+  --z-modal:   200;
+
+  /* ── Color domain constants (used in JS via CSS vars or mirrored) */
+  --hue-step-degrees:   30;    /* degrees between hue stops in OKLCH gradient */
+  --luma-dark-thresh:   0.45;  /* getLuma threshold */
+  --chroma-floor:       0.06;  /* minimum chroma for perceptual scale */
+  --hold-ms:            350;   /* ms before divider long-press triggers */
+}

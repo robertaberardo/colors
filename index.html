@@ -6,21 +6,13 @@
 <title>Palette — Color Generator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/styles/tokens.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bar-h: 60px;
-    --ctrl-bg: #0e0e0e;
-    --ctrl-text: #f0f0f0;
-    --ctrl-muted: #666;
-    --ctrl-border: #222;
-    --transition: 400ms cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
   body {
-    font-family: 'DM Sans', sans-serif;
-    background: #111;
+    font-family: var(--font-sans);
+    background: var(--bg-app);
     display: flex;
     flex-direction: column;
     height: 100dvh;
@@ -41,13 +33,13 @@
     transform: translateY(-50%) scale(0.6);
     z-index: 20;
     width: 44px; height: 44px;
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     background: #fff;
-    color: #111;
+    color: var(--bg-app);
     border: none;
     cursor: pointer;
     font-size: 26px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-sans);
     font-weight: 300;
     line-height: 1;
     display: flex; align-items: center; justify-content: center;
@@ -57,7 +49,7 @@
     padding-bottom: 1px;
   }
 
-  .edge-add-btn:hover { background: #f0f0f0; transform: translateY(-50%) scale(1.08) !important; }
+  .edge-add-btn:hover { background: var(--text-primary); transform: translateY(-50%) scale(1.08) !important; }
   .edge-add-btn:active { transform: translateY(-50%) scale(0.95) !important; }
   #palette:hover .edge-add-btn { opacity: 1; transform: translateY(-50%) scale(1); }
 
@@ -121,17 +113,17 @@
     left: 0; right: 0;
     top: 50%;
     height: 1px;
-    background: rgba(0,0,0,0.18);
+    background: var(--overlay-dark-border);
   }
 
   .split-label {
-    font-family: 'DM Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 9px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     padding: 2px 6px;
-    border-radius: 100px;
-    background: rgba(0,0,0,0.18);
+    border-radius: var(--radius-pill);
+    background: var(--overlay-dark-border);
     color: rgba(255,255,255,0.55);
     position: relative;
     z-index: 1;
@@ -166,7 +158,7 @@
   .swatch:hover .swatch-content { opacity: 1; transform: translateY(0); }
 
   .color-name {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-sans);
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.12em;
@@ -194,9 +186,9 @@
   .action-btn {
     width: 36px;
     height: 36px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.22);
-    background: rgba(255,255,255,0.1);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--overlay-light-border);
+    background: var(--overlay-light-bg);
     backdrop-filter: blur(10px);
     cursor: pointer;
     display: flex;
@@ -206,20 +198,20 @@
     color: inherit;
   }
 
-  .action-btn:hover { background: rgba(255,255,255,0.22); transform: scale(1.08); }
+  .action-btn:hover { background: var(--overlay-light-border); transform: scale(1.08); }
   .action-btn:active { transform: scale(0.94); }
 
   .action-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
   .hex-input {
-    font-family: 'DM Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 13px;
     font-weight: 400;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     padding: 6px 10px;
-    border-radius: 100px;
-    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--overlay-light-border);
     background: rgba(255,255,255,0.08);
     color: inherit;
     width: 108px;
@@ -267,14 +259,14 @@
     position: absolute;
     width: 44px;
     height: 44px;
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     background: #fff;
-    color: #111;
+    color: var(--bg-app);
     border: none;
     cursor: pointer;
     font-size: 26px;
     font-weight: 300;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-sans);
     line-height: 1;
     display: flex;
     align-items: center;
@@ -287,7 +279,7 @@
     padding-bottom: 1px;
   }
 
-  .divider-btn:hover { background: #f0f0f0; }
+  .divider-btn:hover { background: var(--text-primary); }
   .divider-btn:active { transform: scale(0.95) !important; }
 
   .swatch:hover + .divider .divider-btn,
@@ -309,24 +301,24 @@
     padding: 6px;
     gap: 2px;
     box-shadow: 0 4px 24px rgba(0,0,0,0.35);
-    z-index: 200;
+    z-index: var(--z-modal);
     transform: translateX(-50%);
   }
   #divider-count-picker.open { display: flex; }
 
   .dcp-btn {
     width: 36px; height: 36px;
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     border: none;
     background: none;
-    font-family: 'DM Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 13px;
-    color: #111;
+    color: var(--bg-app);
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: background 100ms, color 100ms;
   }
-  .dcp-btn:hover { background: #111; color: #fff; }
+  .dcp-btn:hover { background: var(--bg-app); color: #fff; }
 
   #bar {
     height: var(--bar-h);
@@ -340,14 +332,14 @@
     gap: 16px;
   }
 
-  .bar-left, .bar-right {
+  .bar-left, .bar-center, .bar-right {
     display: flex;
     align-items: center;
     gap: 12px;
   }
 
   .bar-logo {
-    font-family: 'DM Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 13px;
     color: var(--ctrl-text);
     letter-spacing: 0.06em;
@@ -362,11 +354,11 @@
     gap: 8px;
     padding: 0 18px;
     height: 36px;
-    background: #f0f0f0;
-    color: #111;
+    background: var(--text-primary);
+    color: var(--bg-app);
     border: none;
-    border-radius: 100px;
-    font-family: 'DM Sans', sans-serif;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-sans);
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
@@ -384,9 +376,9 @@
     padding: 0 10px 0 12px;
     background: transparent;
     border: 1px solid var(--ctrl-border);
-    border-radius: 100px;
+    border-radius: var(--radius-pill);
     color: var(--ctrl-muted);
-    font-family: 'DM Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 11px;
     cursor: pointer;
     display: flex;
@@ -398,8 +390,8 @@
   }
 
   #palette-selector-btn:hover,
-  #palette-selector-btn.active { border-color: #444; color: var(--ctrl-text); }
-  #palette-selector-btn.active { background: #1a1a1a; }
+  #palette-selector-btn.active { border-color: var(--border-strong); color: var(--ctrl-text); }
+  #palette-selector-btn.active { background: var(--bg-raised); }
 
   .psb-label {
     white-space: nowrap;
@@ -409,7 +401,7 @@
   }
 
   .psb-dots { display: flex; gap: 3px; flex-shrink: 0; }
-  .psb-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .psb-dot { width: 10px; height: 10px; border-radius: var(--radius-full); flex-shrink: 0; }
   .psb-chevron { flex-shrink: 0; opacity: 0.5; }
 
   #palette-browser {
@@ -419,10 +411,10 @@
     transform: translateX(-50%);
     width: 440px;
     max-height: 460px;
-    background: #161616;
-    border: 1px solid #2a2a2a;
-    border-radius: 12px;
-    z-index: 60;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    z-index: var(--z-picker);
     display: none;
     flex-direction: column;
     overflow: hidden;
@@ -436,13 +428,13 @@
     align-items: center;
     gap: 8px;
     padding: 12px 16px;
-    border-bottom: 1px solid #222;
+    border-bottom: 1px solid var(--border-dim);
     flex-shrink: 0;
   }
 
   .pb-search-wrap svg {
     width: 14px; height: 14px;
-    stroke: #555; fill: none; stroke-width: 2;
+    stroke: var(--text-faint); fill: none; stroke-width: 2;
     stroke-linecap: round; flex-shrink: 0;
   }
 
@@ -451,18 +443,18 @@
     background: transparent;
     border: none;
     outline: none;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-sans);
     font-size: 13px;
-    color: #f0f0f0;
+    color: var(--text-primary);
   }
 
-  #pb-search::placeholder { color: #444; }
+  #pb-search::placeholder { color: var(--text-dim); }
 
   .pb-filters {
     display: flex;
     gap: 6px;
     padding: 8px 16px;
-    border-bottom: 1px solid #1e1e1e;
+    border-bottom: 1px solid var(--border-faint);
     flex-wrap: wrap;
   }
 
@@ -474,8 +466,8 @@
     border-radius: 20px;
     border: 1px solid #2e2e2e;
     background: transparent;
-    color: #666;
-    font-family: 'DM Mono', monospace;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 0.03em;
     cursor: pointer;
@@ -484,14 +476,14 @@
   }
 
   .pb-filter-chip.active {
-    border-color: #555;
-    color: #ccc;
-    background: #1e1e1e;
+    border-color: var(--text-faint);
+    color: var(--text-secondary);
+    background: var(--border-faint);
   }
 
   .pb-filter-chip .chip-dot {
     width: 7px; height: 7px;
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     flex-shrink: 0;
   }
 
@@ -501,12 +493,12 @@
     align-items: center;
     gap: 10px;
     padding: 6px 16px 10px;
-    border-bottom: 1px solid #1e1e1e;
+    border-bottom: 1px solid var(--border-faint);
   }
 .pb-color-btn {
     width: 22px; height: 22px;
-    border-radius: 50%;
-    border: 2px solid #333;
+    border-radius: var(--radius-full);
+    border: 2px solid var(--border-mid);
     cursor: pointer;
     padding: 0;
     flex-shrink: 0;
@@ -527,7 +519,7 @@
   .pb-color-clear {
     background: none;
     border: none;
-    color: #555;
+    color: var(--text-faint);
     cursor: pointer;
     font-size: 16px;
     line-height: 1;
@@ -537,23 +529,23 @@
     transition: color 150ms, opacity 150ms;
   }
   .pb-color-row.active .pb-color-clear { opacity: 1; pointer-events: auto; }
-  .pb-color-clear:hover { color: #ccc; }
+  .pb-color-clear:hover { color: var(--text-secondary); }
 
   #pb-list { overflow-y: auto; flex: 1; }
   #pb-list::-webkit-scrollbar { width: 4px; }
   #pb-list::-webkit-scrollbar-track { background: transparent; }
-  #pb-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+  #pb-list::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 2px; }
 
   .pb-section {
     padding: 10px 16px 4px;
-    font-family: 'DM Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 9px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #444;
+    color: var(--text-dim);
     position: sticky;
     top: 0;
-    background: #161616;
+    background: var(--bg-panel);
   }
 
   .pb-item {
@@ -567,14 +559,14 @@
     min-height: 34px;
   }
 
-  .pb-item:hover { background: #1f1f1f; }
-  .pb-item.active { background: #202020; }
-  .pb-item.active .pb-name { color: #f0f0f0; }
-  .pb-item.kb-focus { background: #252525; outline: 1px solid #3a3a3a; outline-offset: -1px; }
-  .pb-item.kb-focus .pb-name { color: #f0f0f0; }
+  .pb-item:hover { background: var(--bg-hover); }
+  .pb-item.active { background: var(--bg-active); }
+  .pb-item.active .pb-name { color: var(--text-primary); }
+  .pb-item.kb-focus { background: var(--bg-subtle); outline: 1px solid #3a3a3a; outline-offset: -1px; }
+  .pb-item.kb-focus .pb-name { color: var(--text-primary); }
 
   .pb-name {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-sans);
     font-size: 13px;
     color: #aaa;
     white-space: nowrap;
@@ -587,14 +579,14 @@
   .pb-dots { display: flex; gap: 3px; flex-shrink: 0; }
   .pb-dot {
     width: 12px; height: 12px;
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     flex-shrink: 0;
   }
 
   .hint {
     font-size: 11px;
     color: var(--ctrl-muted);
-    font-family: 'DM Mono', monospace;
+    font-family: var(--font-mono);
     letter-spacing: 0.04em;
   }
 
@@ -603,10 +595,10 @@
     align-items: center;
     justify-content: center;
     padding: 1px 6px;
-    border: 1px solid #333;
+    border: 1px solid var(--border-mid);
     border-radius: 4px;
     font-size: 10px;
-    background: #1a1a1a;
+    background: var(--bg-raised);
     color: #888;
   }
 
@@ -615,9 +607,9 @@
     padding: 0 14px;
     background: transparent;
     border: 1px solid var(--ctrl-border);
-    border-radius: 100px;
+    border-radius: var(--radius-pill);
     color: var(--ctrl-muted);
-    font-family: 'DM Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 11px;
     cursor: pointer;
     transition: border-color 150ms, color 150ms;
@@ -627,7 +619,7 @@
     letter-spacing: 0.04em;
   }
 
-  #export-btn:hover { border-color: #444; color: var(--ctrl-text); }
+  #export-btn:hover { border-color: var(--border-strong); color: var(--ctrl-text); }
   #export-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
 
   #toast {
@@ -635,16 +627,16 @@
     bottom: 80px;
     left: 50%;
     transform: translateX(-50%) translateY(10px);
-    background: #f0f0f0;
-    color: #111;
+    background: var(--text-primary);
+    color: var(--bg-app);
     padding: 8px 18px;
-    border-radius: 100px;
-    font-family: 'DM Mono', monospace;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
     font-size: 12px;
     opacity: 0;
     transition: opacity 200ms, transform 200ms;
     pointer-events: none;
-    z-index: 100;
+    z-index: var(--z-overlay);
     white-space: nowrap;
   }
 
@@ -657,12 +649,12 @@
     position: fixed;
     bottom: 70px;
     right: 24px;
-    background: #161616;
-    border: 1px solid #2a2a2a;
-    border-radius: 12px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
     padding: 16px;
     width: 280px;
-    z-index: 50;
+    z-index: var(--z-panel);
     display: none;
   }
 
@@ -670,8 +662,8 @@
 
   .export-title {
     font-size: 11px;
-    font-family: 'DM Mono', monospace;
-    color: #666;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     margin-bottom: 12px;
@@ -682,39 +674,39 @@
     align-items: center;
     justify-content: space-between;
     padding: 8px 0;
-    border-bottom: 1px solid #222;
+    border-bottom: 1px solid var(--border-dim);
   }
 
   .export-row:last-child { border-bottom: none; }
 
   .export-label {
-    font-family: 'DM Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 12px;
     color: #999;
   }
 
   .export-copy {
-    font-family: 'DM Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 11px;
-    color: #f0f0f0;
-    background: #252525;
-    border: 1px solid #333;
-    border-radius: 6px;
+    color: var(--text-primary);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-mid);
+    border-radius: var(--radius-sm);
     padding: 4px 10px;
     cursor: pointer;
     transition: background 150ms;
   }
 
-  .export-copy:hover { background: #333; }
+  .export-copy:hover { background: var(--border-mid); }
 
   #adjust-btn {
     height: 32px;
     padding: 0 14px;
     background: transparent;
     border: 1px solid var(--ctrl-border);
-    border-radius: 100px;
+    border-radius: var(--radius-pill);
     color: var(--ctrl-muted);
-    font-family: 'DM Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 11px;
     cursor: pointer;
     transition: border-color 150ms, color 150ms;
@@ -724,8 +716,8 @@
     letter-spacing: 0.04em;
   }
 
-  #adjust-btn:hover, #adjust-btn.active { border-color: #444; color: var(--ctrl-text); }
-  #adjust-btn.active { background: #1a1a1a; }
+  #adjust-btn:hover, #adjust-btn.active { border-color: var(--border-strong); color: var(--ctrl-text); }
+  #adjust-btn.active { background: var(--bg-raised); }
   #adjust-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
 
   #undo-btn, #redo-btn {
@@ -733,14 +725,14 @@
     padding: 0;
     background: transparent;
     border: 1px solid transparent;
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     color: var(--ctrl-muted);
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: border-color 150ms, color 150ms;
     flex-shrink: 0;
   }
-  #undo-btn:hover:not(:disabled), #redo-btn:hover:not(:disabled) { border-color: #333; color: var(--ctrl-text); }
+  #undo-btn:hover:not(:disabled), #redo-btn:hover:not(:disabled) { border-color: var(--border-mid); color: var(--ctrl-text); }
   #undo-btn:disabled, #redo-btn:disabled { opacity: 0.28; cursor: default; }
   #undo-btn svg, #redo-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
@@ -748,12 +740,12 @@
     position: fixed;
     bottom: 70px;
     left: 24px;
-    background: #161616;
-    border: 1px solid #2a2a2a;
-    border-radius: 12px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
     padding: 16px 20px 20px;
     width: 300px;
-    z-index: 50;
+    z-index: var(--z-panel);
     display: none;
   }
 
@@ -761,15 +753,15 @@
 
   .adjust-title {
     font-size: 11px;
-    font-family: 'DM Mono', monospace;
-    color: #666;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     margin-bottom: 6px;
   }
   .adjust-desc {
     font-size: 11px;
-    color: #444;
+    color: var(--text-dim);
     line-height: 1.5;
     margin-bottom: 14px;
   }
@@ -788,16 +780,16 @@
   }
 
   .slider-label {
-    font-family: 'DM Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 11px;
     color: #888;
     letter-spacing: 0.04em;
   }
 
   .slider-value {
-    font-family: 'DM Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 11px;
-    color: #f0f0f0;
+    color: var(--text-primary);
     min-width: 30px;
     text-align: right;
   }
@@ -805,7 +797,7 @@
   .slider-track {
     position: relative;
     height: 4px;
-    background: #2a2a2a;
+    background: var(--border-default);
     border-radius: 2px;
   }
 
@@ -822,9 +814,9 @@
 
   .color-mode-toggle {
     display: flex;
-    background: #111;
+    background: var(--bg-app);
     border: 1px solid #2e2e2e;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     margin-bottom: 14px;
     padding: 3px;
     gap: 2px;
@@ -834,21 +826,21 @@
     height: 28px;
     border: none;
     background: transparent;
-    color: #555;
-    font-family: 'DM Mono', monospace;
+    color: var(--text-faint);
+    font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.04em;
     cursor: pointer;
     border-radius: 5px;
     transition: background 150ms, color 150ms;
   }
-  .cm-btn.active { background: #2a2a2a; color: #f0f0f0; }
+  .cm-btn.active { background: var(--border-default); color: var(--text-primary); }
 
   .slider-fill {
     position: absolute;
     top: 0;
     height: 100%;
-    background: #f0f0f0;
+    background: var(--text-primary);
     border-radius: 2px;
     pointer-events: none;
   }
@@ -871,8 +863,8 @@
     -webkit-appearance: none;
     width: 14px;
     height: 14px;
-    border-radius: 50%;
-    background: #f0f0f0;
+    border-radius: var(--radius-full);
+    background: var(--text-primary);
     border: none;
     box-shadow: 0 1px 4px rgba(0,0,0,0.5);
     transition: transform 120ms;
@@ -882,8 +874,8 @@
   input[type=range].adj-slider::-moz-range-thumb {
     width: 14px;
     height: 14px;
-    border-radius: 50%;
-    background: #f0f0f0;
+    border-radius: var(--radius-full);
+    background: var(--text-primary);
     border: none;
     box-shadow: 0 1px 4px rgba(0,0,0,0.5);
   }
@@ -898,25 +890,25 @@
     flex: 1;
     height: 34px;
     background: transparent;
-    border: 1px solid #333;
-    border-radius: 100px;
+    border: 1px solid var(--border-mid);
+    border-radius: var(--radius-pill);
     color: #888;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-sans);
     font-size: 13px;
     cursor: pointer;
     transition: border-color 150ms, color 150ms;
   }
 
-  .adjust-cancel:hover { border-color: #555; color: #ccc; }
+  .adjust-cancel:hover { border-color: var(--text-faint); color: var(--text-secondary); }
 
   .adjust-apply {
     flex: 1;
     height: 34px;
-    background: #f0f0f0;
+    background: var(--text-primary);
     border: none;
-    border-radius: 100px;
-    color: #111;
-    font-family: 'DM Sans', sans-serif;
+    border-radius: var(--radius-pill);
+    color: var(--bg-app);
+    font-family: var(--font-sans);
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
@@ -929,8 +921,8 @@
 
   .pick-btn {
     width: 28px; height: 28px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--overlay-light-border);
     background: rgba(255,255,255,0.08);
     backdrop-filter: blur(10px);
     cursor: pointer;
@@ -939,7 +931,7 @@
     color: inherit; flex-shrink: 0;
   }
 
-  .pick-btn:hover { background: rgba(255,255,255,0.22); }
+  .pick-btn:hover { background: var(--overlay-light-border); }
   .pick-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
   #color-picker {
@@ -947,7 +939,7 @@
     background: #fff;
     border-radius: 14px;
     box-shadow: 0 8px 40px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.1);
-    z-index: 200;
+    z-index: var(--z-modal);
     width: 234px;
     display: none;
     overflow: hidden;
@@ -968,7 +960,7 @@
   .cp-cursor {
     position: absolute;
     width: 14px; height: 14px;
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     border: 2px solid #fff;
     box-shadow: 0 0 0 1px rgba(0,0,0,0.25);
     transform: translate(-50%, -50%);
@@ -987,12 +979,12 @@
 
   .cp-hue-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 16px; height: 16px; border-radius: 50%;
+    width: 16px; height: 16px; border-radius: var(--radius-full);
     background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.35); cursor: pointer;
   }
 
   .cp-hue-slider::-moz-range-thumb {
-    width: 16px; height: 16px; border-radius: 50%;
+    width: 16px; height: 16px; border-radius: var(--radius-full);
     background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.35); border: none;
   }
 
@@ -1003,9 +995,9 @@
 
   .cp-hex-input {
     flex: 1;
-    border: 1px solid #e8e8e8; border-radius: 6px;
+    border: 1px solid #e8e8e8; border-radius: var(--radius-sm);
     padding: 6px 10px;
-    font-family: 'DM Mono', monospace; font-size: 12px;
+    font-family: var(--font-mono); font-size: 12px;
     outline: none; text-transform: uppercase; color: #333;
     transition: border-color 150ms;
   }
@@ -1014,7 +1006,7 @@
 
   .cp-preview-swatch {
     width: 30px; height: 30px;
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     border: 1px solid #e8e8e8;
     flex-shrink: 0;
   }
@@ -1023,9 +1015,9 @@
     display: block;
     width: calc(100% - 24px);
     margin: 0 12px 10px;
-    border: 1px solid #e8e8e8; border-radius: 6px;
+    border: 1px solid #e8e8e8; border-radius: var(--radius-sm);
     padding: 6px 10px;
-    font-family: 'DM Mono', monospace; font-size: 11px;
+    font-family: var(--font-mono); font-size: 11px;
     outline: none; color: #333;
     transition: border-color 150ms;
   }
@@ -1036,13 +1028,13 @@
   .cp-footer {
     display: flex; align-items: center; justify-content: space-between;
     padding: 8px 12px 10px;
-    border-top: 1px solid #f0f0f0;
+    border-top: 1px solid var(--text-primary);
   }
 
   .cp-copy-btn {
-    font-family: 'DM Mono', monospace; font-size: 10px;
+    font-family: var(--font-mono); font-size: 10px;
     color: #888; background: transparent;
-    border: 1px solid #e8e8e8; border-radius: 6px;
+    border: 1px solid #e8e8e8; border-radius: var(--radius-sm);
     padding: 4px 10px; cursor: pointer; letter-spacing: 0.04em;
     transition: background 150ms;
   }
@@ -1054,9 +1046,9 @@
     padding: 0 14px;
     background: transparent;
     border: 1px solid var(--ctrl-border);
-    border-radius: 100px;
+    border-radius: var(--radius-pill);
     color: var(--ctrl-muted);
-    font-family: 'DM Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 11px;
     cursor: pointer;
     transition: border-color 150ms, color 150ms;
@@ -1066,20 +1058,20 @@
     letter-spacing: 0.04em;
   }
 
-  #contrast-btn:hover, #contrast-btn.active { border-color: #444; color: var(--ctrl-text); }
-  #contrast-btn.active { background: #1a1a1a; }
+  #contrast-btn:hover, #contrast-btn.active { border-color: var(--border-strong); color: var(--ctrl-text); }
+  #contrast-btn.active { background: var(--bg-raised); }
   #contrast-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
 
   #contrast-panel {
     position: fixed;
     bottom: 70px;
     left: 24px;
-    background: #161616;
-    border: 1px solid #2a2a2a;
-    border-radius: 12px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
     padding: 16px 20px 20px;
     width: 300px;
-    z-index: 50;
+    z-index: var(--z-panel);
     display: none;
   }
 
@@ -1089,12 +1081,12 @@
     position: fixed;
     bottom: 70px;
     left: 24px;
-    background: #161616;
-    border: 1px solid #2a2a2a;
-    border-radius: 12px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
     padding: 16px 20px 20px;
     width: 300px;
-    z-index: 50;
+    z-index: var(--z-panel);
     display: none;
   }
 
@@ -1114,20 +1106,20 @@
     justify-content: center;
     gap: 6px;
     padding: 10px 6px;
-    background: #111;
-    border: 1px solid #2a2a2a;
-    border-radius: 8px;
+    background: var(--bg-app);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
     cursor: pointer;
     transition: border-color 150ms, background 150ms;
-    color: #666;
+    color: var(--text-muted);
   }
 
   .dir-btn:hover { border-color: #3a3a3a; color: #aaa; }
 
   .dir-btn.active {
-    border-color: #555;
-    background: #1e1e1e;
-    color: #f0f0f0;
+    border-color: var(--text-faint);
+    background: var(--border-faint);
+    color: var(--text-primary);
   }
 
   .dir-btn svg {
@@ -1141,7 +1133,7 @@
   }
 
   .dir-label {
-    font-family: 'DM Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 9px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -1151,82 +1143,82 @@
 </head>
 <body>
 
-<div id="palette"></div>
+<main id="palette" aria-label="Color palette"></main>
 
-<div id="bar">
+<div id="bar" role="toolbar" aria-label="Palette controls">
   <div class="bar-left">
-    <span class="bar-logo">palette.</span>
-    <div class="bar-sep"></div>
+    <span class="bar-logo" aria-hidden="true">palette.</span>
+    <div class="bar-sep" aria-hidden="true"></div>
     <button id="generate-btn">
-      <svg viewBox="0 0 24 24"><path d="M20 11A8 8 0 0 0 4.5 9M4 5v4h4M4 13a8 8 0 0 0 15.5 2m.5 4v-4h-4"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11A8 8 0 0 0 4.5 9M4 5v4h4M4 13a8 8 0 0 0 15.5 2m.5 4v-4h-4"/></svg>
       Generate
     </button>
   </div>
 
-  <div class="bar-left">
-    <button id="palette-selector-btn">
-      <span class="psb-dots"></span>
+  <div class="bar-center">
+    <button id="palette-selector-btn" aria-haspopup="dialog" aria-expanded="false">
+      <span class="psb-dots" aria-hidden="true"></span>
       <span class="psb-label">Random</span>
-      <svg class="psb-chevron" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      <svg class="psb-chevron" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
     </button>
   </div>
 
   <div class="bar-right">
-    <span class="hint"><kbd>space</kbd> to generate</span>
-    <div class="bar-sep"></div>
-    <button id="undo-btn" title="Undo (Ctrl+Z)" disabled>
-      <svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
+    <span class="hint" aria-label="Tip: press Space to generate"><kbd>space</kbd> to generate</span>
+    <div class="bar-sep" aria-hidden="true"></div>
+    <button id="undo-btn" title="Undo (Ctrl+Z)" aria-label="Undo" disabled>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
     </button>
-    <button id="redo-btn" title="Redo (Ctrl+Y)" disabled>
-      <svg viewBox="0 0 24 24"><path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg>
+    <button id="redo-btn" title="Redo (Ctrl+Y)" aria-label="Redo" disabled>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg>
     </button>
-    <div class="bar-sep"></div>
-    <button id="adjust-btn">
-      <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="8" cy="6" r="2" fill="var(--ctrl-bg)"/><circle cx="16" cy="12" r="2" fill="var(--ctrl-bg)"/><circle cx="10" cy="18" r="2" fill="var(--ctrl-bg)"/></svg>
+    <div class="bar-sep" aria-hidden="true"></div>
+    <button id="adjust-btn" aria-haspopup="dialog" aria-expanded="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="8" cy="6" r="2" fill="var(--ctrl-bg)"/><circle cx="16" cy="12" r="2" fill="var(--ctrl-bg)"/><circle cx="10" cy="18" r="2" fill="var(--ctrl-bg)"/></svg>
       Adjust
     </button>
-    <button id="contrast-btn">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M12 3a9 9 0 0 1 0 18" fill="currentColor" stroke="none" opacity="0.4"/></svg>
+    <button id="contrast-btn" aria-haspopup="dialog" aria-expanded="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M12 3a9 9 0 0 1 0 18" fill="currentColor" stroke="none" opacity="0.4"/></svg>
       Spread
     </button>
-    <div class="bar-sep"></div>
-    <button id="export-btn">
-      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+    <div class="bar-sep" aria-hidden="true"></div>
+    <button id="export-btn" aria-haspopup="dialog" aria-expanded="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
       Export
     </button>
   </div>
 </div>
 
-<div id="palette-browser">
-  <div class="pb-search-wrap">
-    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-    <input type="text" id="pb-search" placeholder="Search palette..." autocomplete="off" spellcheck="false">
+<div id="palette-browser" role="dialog" aria-label="Palette browser" aria-modal="true">
+  <div class="pb-search-wrap" role="search">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <input type="text" id="pb-search" placeholder="Search palette..." autocomplete="off" spellcheck="false" aria-label="Search palettes">
   </div>
-  <div class="pb-filters">
-    <button class="pb-filter-chip active" data-kind="q">
-      <span class="chip-dot" style="background:#7c9ef8"></span>qualitative
+  <div class="pb-filters" role="group" aria-label="Filter by type">
+    <button class="pb-filter-chip active" data-kind="q" aria-pressed="true">
+      <span class="chip-dot" style="background:#7c9ef8" aria-hidden="true"></span>qualitative
     </button>
-    <button class="pb-filter-chip active" data-kind="s">
-      <span class="chip-dot" style="background:#5fc98c"></span>sequential
+    <button class="pb-filter-chip active" data-kind="s" aria-pressed="true">
+      <span class="chip-dot" style="background:#5fc98c" aria-hidden="true"></span>sequential
     </button>
-    <button class="pb-filter-chip active" data-kind="d">
-      <span class="chip-dot" style="background:#f4845f"></span>diverging
+    <button class="pb-filter-chip active" data-kind="d" aria-pressed="true">
+      <span class="chip-dot" style="background:#f4845f" aria-hidden="true"></span>diverging
     </button>
   </div>
   <div class="pb-color-row" id="pb-color-row">
-    <button class="pb-color-btn" id="pb-color-btn" title="Filter by color"></button>
+    <button class="pb-color-btn" id="pb-color-btn" aria-label="Filter by color" title="Filter by color"></button>
     <div class="pb-tol-wrap">
       <div class="slider-track">
-        <div class="slider-fill" id="pb-tol-fill"></div>
-        <input type="range" class="adj-slider" id="pb-tol-slider" min="5" max="40" value="20">
+        <div class="slider-fill" id="pb-tol-fill" aria-hidden="true"></div>
+        <input type="range" class="adj-slider" id="pb-tol-slider" min="5" max="40" value="20" aria-label="Color match tolerance">
       </div>
     </div>
-    <button class="pb-color-clear" id="pb-color-clear" title="Clear">×</button>
+    <button class="pb-color-clear" id="pb-color-clear" aria-label="Clear color filter" title="Clear">×</button>
   </div>
-  <div id="pb-list"></div>
+  <div id="pb-list" role="list" aria-label="Palettes"></div>
 </div>
 
-<div id="contrast-panel">
+<div id="contrast-panel" role="dialog" aria-label="Spread adjustment" aria-modal="true">
   <div class="adjust-title">Spread</div>
   <p class="adjust-desc">Push similar colors apart so every pair stays perceptually distinct. Only touches lightness — hue is preserved.</p>
   <div class="slider-row">
@@ -1236,7 +1228,7 @@
     </div>
     <div class="slider-track">
       <div class="slider-fill" id="con-fill"></div>
-      <input type="range" class="adj-slider" id="sl-con" min="0" max="100" value="0">
+      <input type="range" class="adj-slider" id="sl-con" min="0" max="100" value="0" aria-label="Strength">
     </div>
   </div>
   <div class="adjust-actions">
@@ -1245,7 +1237,7 @@
   </div>
 </div>
 
-<div id="oklch-panel">
+<div id="oklch-panel" role="dialog" aria-label="Perceptual OKLCH generation" aria-modal="true">
   <div class="adjust-title">Perceptual · OKLCH</div>
   <div class="dir-group">
     <button class="dir-btn active" data-scale="hue">
@@ -1268,7 +1260,7 @@
     </div>
     <div class="slider-track">
       <div class="slider-fill" id="oklch-l-fill"></div>
-      <input type="range" class="adj-slider" id="sl-oklch-l" min="10" max="90" value="65">
+      <input type="range" class="adj-slider" id="sl-oklch-l" min="10" max="90" value="65" aria-labelledby="oklch-l-label">
     </div>
   </div>
   <div class="slider-row">
@@ -1278,7 +1270,7 @@
     </div>
     <div class="slider-track">
       <div class="slider-fill" id="oklch-c-fill"></div>
-      <input type="range" class="adj-slider" id="sl-oklch-c" min="0" max="35" value="18">
+      <input type="range" class="adj-slider" id="sl-oklch-c" min="0" max="35" value="18" aria-labelledby="oklch-c-label">
     </div>
   </div>
   <div class="slider-row">
@@ -1288,7 +1280,7 @@
     </div>
     <div class="slider-track hue-track" id="oklch-gen-hue-track">
       <div class="slider-fill" id="oklch-h-fill"></div>
-      <input type="range" class="adj-slider" id="sl-oklch-h" min="0" max="359" value="0">
+      <input type="range" class="adj-slider" id="sl-oklch-h" min="0" max="359" value="0" aria-labelledby="oklch-h-label">
     </div>
   </div>
   <div class="adjust-actions">
@@ -1297,7 +1289,7 @@
   </div>
 </div>
 
-<div id="adjust-panel">
+<div id="adjust-panel" role="dialog" aria-label="Adjust palette" aria-modal="true">
   <div class="adjust-title">Adjust palette</div>
   <div class="color-mode-toggle">
     <button class="cm-btn active" data-cm="hsl">HSL</button>
@@ -1310,7 +1302,7 @@
     </div>
     <div class="slider-track hue-track" id="adj-hue-track">
       <div class="slider-fill" id="hue-fill"></div>
-      <input type="range" class="adj-slider" id="sl-hue" min="-180" max="180" value="0">
+      <input type="range" class="adj-slider" id="sl-hue" min="-180" max="180" value="0" aria-label="Hue">
     </div>
   </div>
   <div class="slider-row">
@@ -1320,7 +1312,7 @@
     </div>
     <div class="slider-track">
       <div class="slider-fill" id="sat-fill"></div>
-      <input type="range" class="adj-slider" id="sl-sat" min="-100" max="100" value="0">
+      <input type="range" class="adj-slider" id="sl-sat" min="-100" max="100" value="0" aria-labelledby="adj-sat-label">
     </div>
   </div>
   <div class="slider-row">
@@ -1330,7 +1322,7 @@
     </div>
     <div class="slider-track">
       <div class="slider-fill" id="bri-fill"></div>
-      <input type="range" class="adj-slider" id="sl-bri" min="-100" max="100" value="0">
+      <input type="range" class="adj-slider" id="sl-bri" min="-100" max="100" value="0" aria-labelledby="adj-bri-label">
     </div>
   </div>
   <div class="slider-row">
@@ -1340,7 +1332,7 @@
     </div>
     <div class="slider-track">
       <div class="slider-fill" id="tmp-fill"></div>
-      <input type="range" class="adj-slider" id="sl-tmp" min="-100" max="100" value="0">
+      <input type="range" class="adj-slider" id="sl-tmp" min="-100" max="100" value="0" aria-label="Temperature">
     </div>
   </div>
   <div class="adjust-actions">
@@ -1349,7 +1341,7 @@
   </div>
 </div>
 
-<div id="export-panel">
+<div id="export-panel" role="dialog" aria-label="Export palette" aria-modal="true">
   <div class="export-title">Export palette</div>
   <div class="export-row">
     <span class="export-label">RGB list</span>
@@ -1373,1548 +1365,38 @@
   </div>
 </div>
 
-<div id="divider-count-picker"></div>
+<div id="divider-count-picker" role="menu" aria-label="Insert N colors"></div>
 
-<div id="color-picker">
-  <div class="cp-area" id="cp-area">
-    <div class="cp-cursor" id="cp-cursor"></div>
+<div id="color-picker" role="dialog" aria-label="Color picker" aria-modal="true">
+  <div class="cp-area" id="cp-area" aria-label="Color saturation and brightness" role="img">
+    <div class="cp-cursor" id="cp-cursor" aria-hidden="true"></div>
   </div>
-  <input type="range" class="cp-hue-slider" id="cp-hue" min="0" max="359" value="0">
+  <input type="range" class="cp-hue-slider" id="cp-hue" min="0" max="359" value="0" aria-label="Hue">
   <div class="cp-hex-row">
-    <input type="text" class="cp-hex-input" id="cp-hex" maxlength="7" spellcheck="false">
-    <div class="cp-preview-swatch" id="cp-preview"></div>
+    <input type="text" class="cp-hex-input" id="cp-hex" maxlength="7" spellcheck="false" aria-label="Hex color value">
+    <div class="cp-preview-swatch" id="cp-preview" aria-hidden="true"></div>
   </div>
-  <input type="text" class="cp-color-text" id="cp-color-text" spellcheck="false" placeholder="rgba(0, 0, 0, 1)">
+  <input type="text" class="cp-color-text" id="cp-color-text" spellcheck="false" placeholder="rgba(0, 0, 0, 1)" aria-label="RGBA color value">
   <div class="cp-footer">
     <button class="cp-copy-btn" id="cp-copy">Copy hex</button>
     <button class="cp-copy-btn" id="cp-copy-rgba">Copy rgba</button>
   </div>
 </div>
 
-<div id="toast"></div>
+<div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <script src="palettes.js"></script>
-<script>
-const MAX_COLORS = 10;
-let mode = 'random';
-let swatches = [];
-let dragSrc = null;
-
-const colorNames = [
-  [0,'Ruby'],[15,'Vermilion'],[25,'Tangerine'],[35,'Amber'],[45,'Gold'],
-  [55,'Flax'],[65,'Lime'],[80,'Emerald'],[100,'Jade'],[130,'Teal'],
-  [160,'Aqua'],[185,'Sky'],[210,'Cobalt'],[230,'Indigo'],[255,'Violet'],
-  [280,'Plum'],[300,'Fuchsia'],[320,'Rose'],[345,'Crimson'],[360,'Ruby']
-];
-
-function getColorName(h, s, l) {
-  if (s < 12) {
-    if (l > 85) return 'Snow';
-    if (l > 65) return 'Silver';
-    if (l > 40) return 'Ash';
-    if (l > 20) return 'Charcoal';
-    return 'Onyx';
-  }
-  if (l > 85) return 'Blush';
-  if (l < 20) return 'Noir';
-  const h360 = ((h % 360) + 360) % 360;
-  for (let i = colorNames.length - 1; i >= 0; i--) {
-    if (h360 >= colorNames[i][0]) return colorNames[i][1];
-  }
-  return 'Hue';
-}
-
-function hslToHex(h, s, l) {
-  h = ((h % 360) + 360) % 360;
-  s /= 100; l /= 100;
-  const a = s * Math.min(l, 1 - l);
-  const f = n => {
-    const k = (n + h / 30) % 12;
-    const c = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    return Math.round(255 * c).toString(16).padStart(2, '0');
-  };
-  return '#' + f(0) + f(8) + f(4);
-}
-
-// ── OKLCH ─────────────────────────────────────────────────────────────────────
-// L: 0–1  C: 0–0.4  H: 0–360
-function oklchToHex(L, C, H) {
-  const hr = H * Math.PI / 180;
-  const a  = C * Math.cos(hr);
-  const b  = C * Math.sin(hr);
-  const l_ = L + 0.3963377774*a + 0.2158037573*b;
-  const m_ = L - 0.1055613458*a - 0.0638541728*b;
-  const s_ = L - 0.0894841775*a - 1.2914855480*b;
-  const l3 = l_*l_*l_, m3 = m_*m_*m_, s3 = s_*s_*s_;
-  let r =  4.0767416621*l3 - 3.3077115913*m3 + 0.2309699292*s3;
-  let g = -1.2684380046*l3 + 2.6097574011*m3 - 0.3413193965*s3;
-  let bv= -0.0041960863*l3 - 0.7034186147*m3 + 1.7076147010*s3;
-  r = Math.max(0,Math.min(1,r)); g = Math.max(0,Math.min(1,g)); bv = Math.max(0,Math.min(1,bv));
-  const toS = c => c <= 0.0031308 ? 12.92*c : 1.055*Math.pow(c,1/2.4)-0.055;
-  return '#' + [r,g,bv].map(c => Math.round(toS(c)*255).toString(16).padStart(2,'0')).join('');
-}
-// ──────────────────────────────────────────────────────────────────────────────
-
-function hexToOklch(hex) {
-  const fromS = c => c <= 0.04045 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4);
-  const r = fromS(parseInt(hex.slice(1,3),16)/255);
-  const g = fromS(parseInt(hex.slice(3,5),16)/255);
-  const b = fromS(parseInt(hex.slice(5,7),16)/255);
-  const l = 0.4122214708*r + 0.5363325363*g + 0.0514459929*b;
-  const m = 0.2119034982*r + 0.6806995451*g + 0.1073969566*b;
-  const s = 0.0883024619*r + 0.2817188376*g + 0.6299787005*b;
-  const l_ = Math.cbrt(l), m_ = Math.cbrt(m), s_ = Math.cbrt(s);
-  const L  =  0.2104542553*l_ + 0.7936177850*m_ - 0.0040720468*s_;
-  const a  =  1.9779984951*l_ - 2.4285922050*m_ + 0.4505937099*s_;
-  const bv =  0.0259040371*l_ + 0.7827717662*m_ - 0.8086757660*s_;
-  const C  = Math.sqrt(a*a + bv*bv);
-  let H = Math.atan2(bv, a) * 180 / Math.PI;
-  if (H < 0) H += 360;
-  return [L, C, H]; // L: 0–1, C: 0–~0.4, H: 0–360
-}
-
-// Perceptually uniform color distance (Oklab Euclidean)
-function oklabDist(hex1, hex2) {
-  const [L1,C1,H1] = hexToOklch(hex1);
-  const [L2,C2,H2] = hexToOklch(hex2);
-  const r1 = H1*Math.PI/180, r2 = H2*Math.PI/180;
-  const dL = L1-L2;
-  const da = C1*Math.cos(r1) - C2*Math.cos(r2);
-  const db = C1*Math.sin(r1) - C2*Math.sin(r2);
-  return Math.sqrt(dL*dL + da*da + db*db);
-}
-
-function hexToHsl(hex) {
-  let r = parseInt(hex.slice(1,3),16)/255;
-  let g = parseInt(hex.slice(3,5),16)/255;
-  let b = parseInt(hex.slice(5,7),16)/255;
-  const max = Math.max(r,g,b), min = Math.min(r,g,b);
-  let h, s, l = (max+min)/2;
-  if (max === min) { h = s = 0; }
-  else {
-    const d = max - min;
-    s = l > 0.5 ? d/(2-max-min) : d/(max+min);
-    switch(max) {
-      case r: h = (g-b)/d + (g<b?6:0); break;
-      case g: h = (b-r)/d + 2; break;
-      case b: h = (r-g)/d + 4; break;
-    }
-    h /= 6;
-  }
-  return [h*360, s*100, l*100];
-}
-
-function getLuma(hex) {
-  const r = parseInt(hex.slice(1,3),16)/255;
-  const g = parseInt(hex.slice(3,5),16)/255;
-  const b = parseInt(hex.slice(5,7),16)/255;
-  return 0.2126*r + 0.7152*g + 0.0722*b;
-}
-
-function rand(min, max) { return Math.random() * (max - min) + min; }
-
-function blendHex(hex1, hex2) {
-  const r = Math.round((parseInt(hex1.slice(1,3),16) + parseInt(hex2.slice(1,3),16)) / 2);
-  const g = Math.round((parseInt(hex1.slice(3,5),16) + parseInt(hex2.slice(3,5),16)) / 2);
-  const b = Math.round((parseInt(hex1.slice(5,7),16) + parseInt(hex2.slice(5,7),16)) / 2);
-  return '#' + [r, g, b].map(c => c.toString(16).padStart(2, '0')).join('');
-}
-
-function generatePalette(count) {
-  const baseH = rand(0, 360);
-  const colors = [];
-  if (mode === 'analogous') {
-    const baseS = rand(45, 80), baseL = rand(38, 62);
-    for (let i = 0; i < count; i++) {
-      const h = baseH + (i - Math.floor(count/2)) * rand(14, 22);
-      const s = baseS + rand(-8, 8);
-      const l = baseL + (i - Math.floor(count/2)) * rand(4, 9);
-      colors.push(hslToHex(h, Math.max(20, Math.min(90, s)), Math.max(20, Math.min(82, l))));
-    }
-  } else if (mode === 'complementary') {
-    const s = rand(40, 75), l = rand(35, 65);
-    for (let i = 0; i < count; i++) {
-      const offsets = [0, 180, 30, 210, 60, 150, 45, 225, 15, 195];
-      const h = baseH + (offsets[i % offsets.length] || i * 37);
-      colors.push(hslToHex(h, s + rand(-10,10), l + rand(-12,12)));
-    }
-  } else if (mode === 'triadic') {
-    const s = rand(40, 72), l = rand(38, 62);
-    const base = [baseH, baseH + 120, baseH + 240];
-    for (let i = 0; i < count; i++) {
-      const h = base[i % 3] + rand(-15, 15);
-      colors.push(hslToHex(h, s + rand(-8,8), l + rand(-10,10)));
-    }
-  } else if (mode === 'pastel') {
-    for (let i = 0; i < count; i++) {
-      const h = baseH + i * rand(20, 45);
-      colors.push(hslToHex(h, rand(30, 60), rand(72, 88)));
-    }
-  } else if (mode === 'perceptual') {
-    const { L, C, H, scale } = oklchParams;
-    for (let i = 0; i < count; i++) {
-      const t = count > 1 ? i / (count - 1) : 0;
-      let lc, cc, hc;
-      if (scale === 'lightness') {
-        // L varies dark→light; L slider controls the center of the range
-        const lo = Math.max(0.05, L - 0.42);
-        const hi = Math.min(0.97, L + 0.42);
-        lc = lo + t * (hi - lo);
-        cc = C;
-        hc = H;
-      } else if (scale === 'chroma') {
-        // C varies from a near-zero tint → C max; avoids a pure gray first swatch
-        lc = L;
-        cc = 0.06 + t * (C - 0.06);
-        hc = H;
-      } else {
-        // Hue scale: hues evenly spaced, L and C fixed
-        lc = L;
-        cc = C;
-        hc = (H + t * 360) % 360;
-      }
-      colors.push(oklchToHex(lc, cc, hc));
-    }
-  } else {
-    for (let i = 0; i < count; i++) {
-      colors.push(hslToHex(rand(0,360), rand(30,80), rand(30,75)));
-    }
-  }
-  return colors;
-}
-
-function applySwatch(el, hex) {
-  el.querySelector('.swatch-bg').style.backgroundColor = hex;
-  const luma = getLuma(hex);
-  const dark = luma > 0.45;
-  const textColor = dark ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.9)';
-  const border = dark ? 'rgba(0,0,0,0.18)' : 'rgba(255,255,255,0.22)';
-  const bg    = dark ? 'rgba(0,0,0,0.07)'  : 'rgba(255,255,255,0.1)';
-  el.querySelectorAll('.color-name, .action-btn').forEach(e => e.style.color = textColor);
-  el.querySelectorAll('.action-btn').forEach(e => {
-    e.style.borderColor = border;
-    e.style.background  = bg;
-  });
-  const inp = el.querySelector('.hex-input');
-  if (document.activeElement !== inp) inp.value = hex.toUpperCase();
-  inp.style.borderColor = border;
-  inp.style.background  = dark ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.08)';
-  inp.style.color = textColor;
-  const [h, s, l] = hexToHsl(hex);
-  el.querySelector('.color-name').textContent = getColorName(h, s, l);
-}
-
-function updateURL() {
-  if (isAdjusting || isContrasting) return;
-  const hash = swatches.map(s => s.hex.slice(1).toLowerCase()).join('-');
-  history.replaceState(null, '', '#' + hash);
-}
-
-// ── Undo / Redo ──────────────────────────────────────────────────────────────
-
-let historyStack = [];
-let redoStack    = [];
-
-function pushHistory() {
-  historyStack.push(swatches.map(s => s.hex));
-  redoStack = [];
-  updateUndoRedo();
-}
-
-function updateUndoRedo() {
-  const undoBtn = document.getElementById('undo-btn');
-  const redoBtn = document.getElementById('redo-btn');
-  if (undoBtn) undoBtn.disabled = historyStack.length === 0;
-  if (redoBtn) redoBtn.disabled = redoStack.length === 0;
-}
-
-function applyHistory(hexes) {
-  swatches = hexes.map(hex => ({ hex }));
-  renderPalette();
-  updateURL();
-  updateSelectorBtn();
-}
-
-function undo() {
-  if (isAdjusting || isContrasting || historyStack.length === 0) return;
-  redoStack.push(swatches.map(s => s.hex));
-  applyHistory(historyStack.pop());
-  updateUndoRedo();
-}
-
-function redo() {
-  if (isAdjusting || isContrasting || redoStack.length === 0) return;
-  historyStack.push(swatches.map(s => s.hex));
-  applyHistory(redoStack.pop());
-  updateUndoRedo();
-}
-
-function parseHash() {
-  const raw = window.location.hash.slice(1);
-  if (!raw) return null;
-  const parts = raw.split('-');
-  if (parts.length < 2) return null;
-  const hexes = parts.map(p => '#' + p);
-  return hexes.every(h => /^#[0-9a-f]{6}$/i.test(h)) ? hexes : null;
-}
-
-function generate() {
-  pushHistory();
-  activePalette = null;
-  if (typeof updateSelectorBtn === 'function') updateSelectorBtn();
-  if (mode === 'perceptual') {
-    oklchParams.L = rand(55, 72) / 100;
-    oklchParams.C = rand(18, 28) / 100;
-    oklchParams.H = rand(0, 359);
-    if (typeof syncOklchSliders === 'function') syncOklchSliders();
-  }
-  const newColors = generatePalette(swatches.length);
-  const els = document.querySelectorAll('.swatch');
-  swatches.forEach((sw, i) => {
-    sw.hex = newColors[i];
-    applySwatch(els[i], sw.hex);
-  });
-  updateURL();
-}
-
-function interpolateOklab(hex1, hex2, t) {
-  const [L1,C1,H1] = hexToOklch(hex1);
-  const [L2,C2,H2] = hexToOklch(hex2);
-  const r1 = H1*Math.PI/180, r2 = H2*Math.PI/180;
-  const a1 = C1*Math.cos(r1), b1 = C1*Math.sin(r1);
-  const a2 = C2*Math.cos(r2), b2 = C2*Math.sin(r2);
-  const L = L1+(L2-L1)*t, a = a1+(a2-a1)*t, b = b1+(b2-b1)*t;
-  const C = Math.sqrt(a*a+b*b);
-  const H = (Math.atan2(b,a)*180/Math.PI+360)%360;
-  return oklchToHex(L, C, H);
-}
-
-function insertNSwatches(afterIdx, n) {
-  pushHistory();
-  const hex1 = swatches[afterIdx].hex;
-  const hex2 = swatches[afterIdx + 1].hex;
-  const inserts = Array.from({length: n}, (_, i) => ({
-    hex: interpolateOklab(hex1, hex2, (i+1)/(n+1))
-  }));
-  swatches.splice(afterIdx + 1, 0, ...inserts);
-  renderPalette();
-  updateURL();
-}
-
-function insertSwatch(afterIdx) {
-  pushHistory();
-  const hex1 = swatches[afterIdx].hex;
-  const hex2 = swatches[afterIdx + 1].hex;
-  const newHex = blendHex(hex1, hex2);
-  swatches.splice(afterIdx + 1, 0, { hex: newHex });
-  renderPalette();
-  updateURL();
-}
-
-function extrapolateHex(anchorHex, neighborHex) {
-  const [h0, s0, l0] = hexToHsl(anchorHex);
-  const [h1, s1, l1] = hexToHsl(neighborHex);
-  return hslToHex(
-    ((h0 - (h1 - h0)) + 360) % 360,
-    Math.max(15, Math.min(85, s0 - (s1 - s0))),
-    Math.max(8,  Math.min(92, l0 - (l1 - l0)))
-  );
-}
-
-function insertSwatchAtStart() {
-  pushHistory();
-  const newHex = swatches.length >= 2
-    ? extrapolateHex(swatches[0].hex, swatches[1].hex)
-    : hslToHex(...hexToHsl(swatches[0].hex).map((v, i) => i === 0 ? (v + 30) % 360 : v));
-  swatches.unshift({ hex: newHex });
-  renderPalette();
-  updateURL();
-}
-
-function insertSwatchAtEnd() {
-  pushHistory();
-  const n = swatches.length;
-  const newHex = n >= 2
-    ? extrapolateHex(swatches[n - 1].hex, swatches[n - 2].hex)
-    : hslToHex(...hexToHsl(swatches[0].hex).map((v, i) => i === 0 ? (v + 330) % 360 : v));
-  swatches.push({ hex: newHex });
-  renderPalette();
-  updateURL();
-}
-
-function deleteSwatch(idx) {
-  if (swatches.length <= 2) { showToast('Need at least 2 colors'); return; }
-  pushHistory();
-  swatches.splice(idx, 1);
-  renderPalette();
-  updateURL();
-}
-
-function createSwatchEl(idx) {
-  const sw = swatches[idx];
-  const el = document.createElement('div');
-  el.className = 'swatch';
-  el.draggable = true;
-  el.innerHTML = `
-    <div class="swatch-original"><div class="swatch-original-bg"></div></div>
-    <div class="split-divider">
-      <span class="split-label">before</span>
-      <span class="split-label">after</span>
-    </div>
-    <div class="swatch-bg"></div>
-    <div class="swatch-actions">
-      <button class="action-btn delete-btn" title="Delete color" aria-label="Delete color">
-        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-      </button>
-      <button class="action-btn drag-handle" title="Drag to reorder" aria-label="Drag to reorder">
-        <svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="7" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="9" cy="17" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="17" r="1" fill="currentColor" stroke="none"/></svg>
-      </button>
-    </div>
-    <div class="swatch-content">
-      <div class="color-name"></div>
-      <input class="hex-input" type="text" maxlength="7" spellcheck="false" aria-label="Hex color code" />
-      <button class="pick-btn" title="Color picker" aria-label="Open color picker">
-        <svg viewBox="0 0 24 24"><path d="M2 22l10-10M20.5 3.5a2.121 2.121 0 0 0-3 0L9 12l3 3 8.5-8.5a2.121 2.121 0 0 0 0-3z"/><path d="M9 12l-2 5-2 2 5-2z"/></svg>
-      </button>
-    </div>
-  `;
-
-  el.querySelector('.delete-btn').addEventListener('click', e => {
-    e.stopPropagation();
-    deleteSwatch(idx);
-  });
-
-  el.querySelector('.pick-btn').addEventListener('click', e => {
-    e.stopPropagation();
-    openPicker(idx, el.querySelector('.pick-btn'));
-  });
-
-  const inp = el.querySelector('.hex-input');
-
-  inp.addEventListener('click', e => e.stopPropagation());
-  inp.addEventListener('focus', () => { inp.select(); el.draggable = false; });
-  inp.addEventListener('blur', () => { el.draggable = true; inp.classList.remove('invalid'); });
-
-  inp._histPushed = false;
-  inp.addEventListener('focus', () => { inp._histPushed = false; });
-  inp.addEventListener('input', () => {
-    let val = inp.value.trim();
-    if (!val.startsWith('#')) val = '#' + val;
-    if (/^#[0-9a-f]{6}$/i.test(val)) {
-      if (!inp._histPushed) { pushHistory(); inp._histPushed = true; }
-      inp.classList.remove('invalid');
-      swatches[idx].hex = val.toLowerCase();
-      el.querySelector('.swatch-bg').style.backgroundColor = val;
-      const luma = getLuma(val);
-      const dark = luma > 0.45;
-      const textColor = dark ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.9)';
-      const border = dark ? 'rgba(0,0,0,0.18)' : 'rgba(255,255,255,0.22)';
-      el.querySelectorAll('.color-name, .action-btn').forEach(e => e.style.color = textColor);
-      el.querySelectorAll('.action-btn').forEach(e => { e.style.borderColor = border; });
-      inp.style.color = textColor;
-      inp.style.borderColor = border;
-      const [h, s, l] = hexToHsl(val);
-      el.querySelector('.color-name').textContent = getColorName(h, s, l);
-      updateURL();
-    } else {
-      inp.classList.add('invalid');
-    }
-  });
-
-  inp.addEventListener('keydown', e => {
-    if (e.key === 'Enter') inp.blur();
-    if (e.key === ' ') e.stopPropagation();
-  });
-
-  el.addEventListener('dragstart', () => {
-    dragSrc = idx;
-    setTimeout(() => el.classList.add('dragging'), 0);
-  });
-  el.addEventListener('dragend', () => el.classList.remove('dragging'));
-  el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('drag-over'); });
-  el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
-  el.addEventListener('drop', e => {
-    e.preventDefault();
-    el.classList.remove('drag-over');
-    if (dragSrc !== null && dragSrc !== idx) {
-      pushHistory();
-      [swatches[dragSrc], swatches[idx]] = [swatches[idx], swatches[dragSrc]];
-      renderPalette();
-      updateURL();
-    }
-    dragSrc = null;
-  });
-
-  applySwatch(el, sw.hex);
-  return el;
-}
-
-function createDividerEl(afterIdx) {
-  const el = document.createElement('div');
-  el.className = 'divider';
-  el.innerHTML = `<button class="divider-btn" aria-label="Add color between" title="Add · Hold for more">+</button>`;
-  const btn = el.querySelector('.divider-btn');
-  let holdTimer = null;
-  let didHold   = false;
-
-  btn.addEventListener('mousedown', e => {
-    if (e.button !== 0) return;
-    didHold = false;
-    holdTimer = setTimeout(() => { didHold = true; openCountPicker(afterIdx, btn); }, 350);
-  });
-  btn.addEventListener('mouseup',    () => clearTimeout(holdTimer));
-  btn.addEventListener('mouseleave', () => clearTimeout(holdTimer));
-  btn.addEventListener('click', e => {
-    e.stopPropagation();
-    if (!didHold) insertSwatch(afterIdx);
-  });
-  return el;
-}
-
-function createEdgeBtn(onLeft) {
-  const btn = document.createElement('button');
-  btn.className = 'edge-add-btn ' + (onLeft ? 'edge-add-left' : 'edge-add-right');
-  btn.textContent = '+';
-  btn.setAttribute('aria-label', onLeft ? 'Add color at start' : 'Add color at end');
-  btn.addEventListener('click', e => {
-    e.stopPropagation();
-    onLeft ? insertSwatchAtStart() : insertSwatchAtEnd();
-  });
-  return btn;
-}
-
-function updateSwatchMode() {
-  const palette = document.getElementById('palette');
-  const w = window.innerWidth / swatches.length;
-  palette.classList.toggle('swatch-sm', w < 150);
-  palette.classList.toggle('swatch-xs', w < 90);
-}
-
-function renderPalette() {
-  const container = document.getElementById('palette');
-  container.innerHTML = '';
-  container.appendChild(createEdgeBtn(true));
-  swatches.forEach((sw, i) => {
-    container.appendChild(createSwatchEl(i));
-    if (i < swatches.length - 1) {
-      container.appendChild(createDividerEl(i));
-    }
-  });
-  container.appendChild(createEdgeBtn(false));
-  updateSwatchMode();
-  // Re-sync panel state when swatch count changes mid-session
-  if (isAdjusting) {
-    adjustBase = swatches.map(s => s.hex);
-    document.querySelectorAll('.swatch').forEach((el, i) => {
-      el.querySelector('.swatch-original-bg').style.backgroundColor = adjustBase[i];
-    });
-    previewAdjustments();
-  }
-  if (isContrasting) {
-    contrastBase = swatches.map(s => s.hex);
-    document.querySelectorAll('.swatch').forEach((el, i) => {
-      el.querySelector('.swatch-original-bg').style.backgroundColor = contrastBase[i];
-    });
-    previewContrast();
-  }
-}
-
-window.addEventListener('resize', updateSwatchMode);
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => t.classList.remove('show'), 1800);
-}
-
-function initPalette() {
-  const fromHash = parseHash();
-  if (fromHash) {
-    swatches = fromHash.map(hex => ({ hex }));
-  } else {
-    const init = generatePalette(5);
-    swatches = init.map(hex => ({ hex }));
-  }
-  renderPalette();
-  updateURL();
-}
-
-document.getElementById('generate-btn').addEventListener('click', generate);
-
-document.addEventListener('keydown', e => {
-  if (e.code === 'Space' && e.target === document.body) {
-    e.preventDefault();
-    generate();
-  }
-  if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
-  if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); redo(); }
-});
-
-document.getElementById('undo-btn').addEventListener('click', undo);
-document.getElementById('redo-btn').addEventListener('click', redo);
-
-// ── Palette browser ──────────────────────────────────────────────────────────
-
-const MODES = ['random','analogous','complementary','triadic','pastel','perceptual'];
-const paletteSelectorBtn = document.getElementById('palette-selector-btn');
-const paletteBrowser     = document.getElementById('palette-browser');
-const pbSearch           = document.getElementById('pb-search');
-const pbList             = document.getElementById('pb-list');
-
-let pbOpen        = false;
-let pbQuery       = '';
-let pbKinds       = new Set(['q', 's', 'd']);  // active kind filters
-let pbColorPick   = null;   // '#rrggbb' or null (color filter inactive)
-let pbColorTol    = 0.20;   // Oklab distance threshold (0–0.5)
-let pbOffset      = 0;
-const PB_BATCH    = 80;
-let activePalette = null; // null = using a generate mode
-
-function updateSelectorBtn() {
-  const dotsEl  = paletteSelectorBtn.querySelector('.psb-dots');
-  const labelEl = paletteSelectorBtn.querySelector('.psb-label');
-
-  if (activePalette) {
-    const colors = activePalette[1].split(',').slice(0, 10);
-    dotsEl.innerHTML = colors.map(c =>
-      `<span class="psb-dot" style="background:#${c}"></span>`
-    ).join('');
-    labelEl.textContent = activePalette[0];
-  } else {
-    dotsEl.innerHTML = '';
-    labelEl.textContent = mode === 'perceptual' ? 'Perceptual OKLCH' : mode.charAt(0).toUpperCase() + mode.slice(1);
-  }
-}
-
-function buildPbItems(filtered, append) {
-  const frag = document.createDocumentFragment();
-
-  if (!append) {
-    // Mode section
-    const sec = document.createElement('div');
-    sec.className = 'pb-section';
-    sec.textContent = 'Generate';
-    frag.appendChild(sec);
-
-    MODES.forEach(m => {
-      const el = document.createElement('div');
-      el.className = 'pb-item' + (m === mode && !activePalette ? ' active' : '');
-      el.dataset.mode = m;
-      const label = m === 'perceptual' ? 'Perceptual OKLCH' : m.charAt(0).toUpperCase() + m.slice(1);
-      el.innerHTML = `<span class="pb-name">${label}</span>`;
-      el.addEventListener('click', () => {
-        mode = m;
-        activePalette = null;
-        if (m !== 'perceptual') closeOklchPanel(false);
-        generate();
-        updateSelectorBtn();
-        closePaletteBrowser();
-        if (m === 'perceptual') openOklchPanel();
-      });
-      frag.appendChild(el);
-    });
-
-    const sec2 = document.createElement('div');
-    sec2.className = 'pb-section';
-    sec2.textContent = 'Palettes — ' + filtered.length.toLocaleString();
-    frag.appendChild(sec2);
-  }
-
-  const slice = filtered.slice(pbOffset, pbOffset + PB_BATCH);
-  slice.forEach(entry => {
-    const [name, colorsStr] = entry;
-    const colors = colorsStr.split(',');
-    const el = document.createElement('div');
-    el.className = 'pb-item' + (activePalette && activePalette[0] === name ? ' active' : '');
-    const dots = colors.map(c => `<span class="pb-dot" style="background:#${c}"></span>`).join('');
-    el.innerHTML = `<span class="pb-name">${name}</span><div class="pb-dots">${dots}</div>`;
-    el.addEventListener('click', () => {
-      pushHistory();
-      activePalette = entry;
-      const hexes = colorsStr.split(',').map(c => '#' + c);
-      swatches = hexes.map(hex => ({ hex }));
-      renderPalette();
-      updateURL();
-      updateSelectorBtn();
-      closePaletteBrowser();
-    });
-    frag.appendChild(el);
-  });
-
-  pbOffset += slice.length;
-  return frag;
-}
-
-function renderPbList(append) {
-  const q = pbQuery.toLowerCase();
-  const filtered = PYPALETTES.filter(([name, hexStr, tagStr]) => {
-    if (q && !name.toLowerCase().includes(q)) return false;
-    // tag filter: no tags = always show; otherwise at least one tag must be in active set
-    if (tagStr) {
-      // 'dis' (discrete) is treated as synonymous with 'q' (qualitative)
-      const tags = tagStr.split(',').map(t => t === 'dis' ? 'q' : t);
-      if (!tags.some(t => pbKinds.has(t))) return false;
-    }
-    // color picker filter: skip when no color selected
-    if (pbColorPick) {
-      const hexes = hexStr.split(',');
-      if (!hexes.some(h => oklabDist(pbColorPick, '#' + h) <= pbColorTol)) return false;
-    }
-    return true;
-  });
-
-  if (!append) {
-    pbOffset = 0;
-    pbList.innerHTML = '';
-  }
-
-  pbList.appendChild(buildPbItems(filtered, append));
-  pbList._filtered = filtered;
-}
-
-function openPaletteBrowser() {
-  pbQuery = '';
-  pbSearch.value = '';
-  paletteBrowser.classList.add('open');
-  paletteSelectorBtn.classList.add('active');
-  pbOpen = true;
-  renderPbList(false);
-  pbSearch.focus();
-  // focus and scroll active item into view
-  requestAnimationFrame(() => {
-    const active = pbList.querySelector('.pb-item.active');
-    if (active) {
-      active.classList.add('kb-focus');
-      active.scrollIntoView({ block: 'center' });
-    }
-  });
-}
-
-function closePaletteBrowser() {
-  paletteBrowser.classList.remove('open');
-  paletteSelectorBtn.classList.remove('active');
-  pbOpen = false;
-  if (cpOnChange) closePicker();
-}
-
-// infinite scroll
-pbList.addEventListener('scroll', () => {
-  if (!pbList._filtered) return;
-  const nearBottom = pbList.scrollHeight - pbList.scrollTop - pbList.clientHeight < 120;
-  if (nearBottom && pbOffset < pbList._filtered.length) {
-    renderPbList(true);
-  }
-});
-
-pbSearch.addEventListener('input', () => {
-  pbQuery = pbSearch.value;
-  renderPbList(false);
-});
-
-pbSearch.addEventListener('keydown', e => {
-  e.stopPropagation();
-  if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'Enter') return;
-
-  const items = [...pbList.querySelectorAll('.pb-item')];
-  if (!items.length) return;
-
-  const focused = pbList.querySelector('.pb-item.kb-focus');
-  const idx     = focused ? items.indexOf(focused) : -1;
-
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    (focused || items[0])?.click();
-    return;
-  }
-
-  e.preventDefault();
-  const next = e.key === 'ArrowDown'
-    ? items[Math.min(idx + 1, items.length - 1)]
-    : items[Math.max(idx - 1, 0)];
-
-  if (focused) focused.classList.remove('kb-focus');
-  next.classList.add('kb-focus');
-  next.scrollIntoView({ block: 'nearest' });
-});
-
-document.querySelectorAll('.pb-filter-chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    const kind = chip.dataset.kind;
-    if (pbKinds.has(kind)) {
-      // Don't allow deselecting all
-      if (pbKinds.size > 1) {
-        pbKinds.delete(kind);
-        chip.classList.remove('active');
-      }
-    } else {
-      pbKinds.add(kind);
-      chip.classList.add('active');
-    }
-    renderPbList(false);
-  });
-});
-
-// Color picker filter
-const pbColorBtn   = document.getElementById('pb-color-btn');
-const pbColorRowEl = document.getElementById('pb-color-row');
-const pbColorClear = document.getElementById('pb-color-clear');
-const pbTolSlider  = document.getElementById('pb-tol-slider');
-const pbTolFill    = document.getElementById('pb-tol-fill');
-
-function updatePbTolFill() {
-  const pct = (pbTolSlider.value - 5) / (40 - 5) * 100;
-  pbTolFill.style.cssText = `left:0; width:${pct}%`;
-}
-updatePbTolFill();
-
-pbColorBtn.addEventListener('click', e => {
-  e.stopPropagation();
-  // toggle: if picker is already open for the filter, close it (keep filter applied)
-  if (cpEl.classList.contains('open') && cpOnChange) { closePicker(); return; }
-  openPicker(pbColorPick || '#e05555', pbColorBtn, hex => {
-    pbColorPick = hex;
-    pbColorBtn.style.background = hex;
-    pbColorRowEl.classList.add('active');
-    updatePbTolFill();
-    renderPbList(false);
-  });
-});
-
-pbTolSlider.addEventListener('input', () => {
-  pbColorTol = pbTolSlider.value / 100;
-  updatePbTolFill();
-  if (pbColorPick) renderPbList(false);
-});
-
-pbColorClear.addEventListener('click', () => {
-  pbColorPick = null;
-  pbColorBtn.style.background = '';
-  pbColorRowEl.classList.remove('active');
-  closePicker();
-  renderPbList(false);
-});
-
-paletteSelectorBtn.addEventListener('click', e => {
-  e.stopPropagation();
-  pbOpen ? closePaletteBrowser() : openPaletteBrowser();
-});
-
-document.addEventListener('click', () => { if (pbOpen) closePaletteBrowser(); });
-paletteBrowser.addEventListener('click', e => e.stopPropagation());
-
-updateSelectorBtn();
-
-const exportBtn = document.getElementById('export-btn');
-const exportPanel = document.getElementById('export-panel');
-
-exportBtn.addEventListener('click', e => {
-  e.stopPropagation();
-  exportPanel.classList.toggle('open');
-});
-
-document.addEventListener('click', () => exportPanel.classList.remove('open'));
-exportPanel.addEventListener('click', e => e.stopPropagation());
-
-document.getElementById('copy-rgb').addEventListener('click', () => {
-  const list = swatches.map(s => {
-    const r = parseInt(s.hex.slice(1,3),16);
-    const g = parseInt(s.hex.slice(3,5),16);
-    const b = parseInt(s.hex.slice(5,7),16);
-    return `"rgb(${r}, ${g}, ${b})"`;
-  }).join(', ');
-  navigator.clipboard.writeText(list);
-  showToast('RGB list copied!');
-  exportPanel.classList.remove('open');
-});
-
-document.getElementById('copy-rgba').addEventListener('click', () => {
-  const list = swatches.map(s => {
-    const r = parseInt(s.hex.slice(1,3),16);
-    const g = parseInt(s.hex.slice(3,5),16);
-    const b = parseInt(s.hex.slice(5,7),16);
-    return `"rgba(${r}, ${g}, ${b}, 1)"`;
-  }).join(', ');
-  navigator.clipboard.writeText(list);
-  showToast('RGBA list copied!');
-  exportPanel.classList.remove('open');
-});
-
-document.getElementById('copy-url').addEventListener('click', () => {
-  navigator.clipboard.writeText(window.location.href);
-  showToast('URL copied!');
-  exportPanel.classList.remove('open');
-});
-
-document.getElementById('copy-hex').addEventListener('click', () => {
-  navigator.clipboard.writeText(swatches.map(s => `"${s.hex.toUpperCase()}"`).join(', '));
-  showToast('HEX codes copied!');
-  exportPanel.classList.remove('open');
-});
-
-document.getElementById('copy-css').addEventListener('click', () => {
-  const css = ':root {\n' + swatches.map((s,i) => `  --color-${i+1}: ${s.hex.toUpperCase()};`).join('\n') + '\n}';
-  navigator.clipboard.writeText(css);
-  showToast('CSS variables copied!');
-  exportPanel.classList.remove('open');
-});
-
-
-window.addEventListener('hashchange', () => {
-  const fromHash = parseHash();
-  if (fromHash) {
-    swatches = fromHash.map(hex => ({ hex }));
-    renderPalette();
-  }
-});
-
-// ── Adjust palette ───────────────────────────────────────────────────────────
-
-const adjustBtn   = document.getElementById('adjust-btn');
-const adjustPanel = document.getElementById('adjust-panel');
-let adjustBase    = [];
-let isAdjusting   = false;
-
-const sliders = {
-  hue: { el: document.getElementById('sl-hue'), val: document.getElementById('hue-val'), fill: document.getElementById('hue-fill') },
-  sat: { el: document.getElementById('sl-sat'), val: document.getElementById('sat-val'), fill: document.getElementById('sat-fill') },
-  bri: { el: document.getElementById('sl-bri'), val: document.getElementById('bri-val'), fill: document.getElementById('bri-fill') },
-  tmp: { el: document.getElementById('sl-tmp'), val: document.getElementById('tmp-val'), fill: document.getElementById('tmp-fill') },
-};
-
-function updateFill(s) {
-  const min = +s.el.min, max = +s.el.max, v = +s.el.value;
-  const pct = x => (x - min) / (max - min) * 100;
-  const center = pct(0), thumb = pct(v);
-  if (v >= 0) {
-    s.fill.style.left  = center + '%';
-    s.fill.style.width = (thumb - center) + '%';
-  } else {
-    s.fill.style.left  = thumb + '%';
-    s.fill.style.width = (center - thumb) + '%';
-  }
-  s.val.textContent = v;
-}
-
-let adjustColorMode = 'hsl';
-
-function applyAdjustments(hex, hue, sat, bri, tmp) {
-  let [h, s, l] = hexToHsl(hex);
-  h = (h + hue + 360) % 360;
-  s = Math.max(0, Math.min(100, s + sat));
-  l = Math.max(0, Math.min(100, l + bri));
-  if (tmp !== 0) {
-    const target = tmp > 0 ? 30 : 210;
-    const t = Math.abs(tmp) / 100;
-    const diff = ((target - h + 540) % 360) - 180;
-    h = (h + diff * t * 0.5 + 360) % 360;
-    s = Math.max(0, Math.min(100, s + tmp * 0.12));
-  }
-  return hslToHex(h, s, l);
-}
-
-function applyAdjustmentsOklch(hex, hue, chroma, lightness, tmp) {
-  let [L, C, H] = hexToOklch(hex);
-  H = (H + hue + 360) % 360;
-  C = Math.max(0, Math.min(0.4, C + chroma * 0.003));
-  L = Math.max(0, Math.min(1, L + lightness / 100));
-  if (tmp !== 0) {
-    const target = tmp > 0 ? 60 : 220;
-    const t = Math.abs(tmp) / 100;
-    const diff = ((target - H + 540) % 360) - 180;
-    H = (H + diff * t * 0.5 + 360) % 360;
-    C = Math.max(0, Math.min(0.4, C + Math.abs(tmp) * 0.0012));
-  }
-  return oklchToHex(L, C, H);
-}
-
-function previewAdjustments() {
-  const hue = +sliders.hue.el.value;
-  const sat = +sliders.sat.el.value;
-  const bri = +sliders.bri.el.value;
-  const tmp = +sliders.tmp.el.value;
-  const els = document.querySelectorAll('.swatch');
-  adjustBase.forEach((hex, i) => {
-    const adjusted = adjustColorMode === 'oklch'
-      ? applyAdjustmentsOklch(hex, hue, sat, bri, tmp)
-      : applyAdjustments(hex, hue, sat, bri, tmp);
-    swatches[i].hex = adjusted;
-    applySwatch(els[i], adjusted);
-  });
-}
-
-function setAdjustColorMode(m) {
-  adjustColorMode = m;
-  // Update toggle buttons
-  document.querySelectorAll('#adjust-panel .cm-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.cm === m);
-  });
-  // Update slider labels
-  document.getElementById('adj-sat-label').textContent = m === 'oklch' ? 'Chroma'    : 'Saturation';
-  document.getElementById('adj-bri-label').textContent = m === 'oklch' ? 'Lightness' : 'Brightness';
-  // Update hue track gradient
-  const hueTrack = document.getElementById('adj-hue-track');
-  if (m === 'oklch') {
-    const stops = Array.from({length: 13}, (_, i) => oklchToHex(0.65, 0.22, i * 30)).join(',');
-    hueTrack.style.background = `linear-gradient(to right,${stops})`;
-  } else {
-    hueTrack.style.background = '';
-  }
-  previewAdjustments();
-}
-
-document.querySelectorAll('#adjust-panel .cm-btn').forEach(btn => {
-  btn.addEventListener('click', () => setAdjustColorMode(btn.dataset.cm));
-});
-
-function resetSliders() {
-  Object.values(sliders).forEach(s => { s.el.value = 0; updateFill(s); });
-}
-
-function openAdjustPanel() {
-  closeOklchPanel(false);
-  adjustBase = swatches.map(s => s.hex);
-  resetSliders();
-  setAdjustColorMode('hsl');
-  // paint the "before" half of every swatch
-  document.querySelectorAll('.swatch').forEach((el, i) => {
-    el.querySelector('.swatch-original-bg').style.backgroundColor = adjustBase[i];
-  });
-  isAdjusting = true;
-  document.getElementById('palette').classList.add('adjusting');
-  adjustPanel.classList.add('open');
-  adjustBtn.classList.add('active');
-  exportPanel.classList.remove('open');
-}
-
-function closeAdjustPanel() {
-  isAdjusting = false;
-  document.getElementById('palette').classList.remove('adjusting');
-  adjustPanel.classList.remove('open');
-  adjustBtn.classList.remove('active');
-}
-
-adjustBtn.addEventListener('click', e => {
-  e.stopPropagation();
-  if (adjustPanel.classList.contains('open')) {
-    // toggling off = cancel
-    swatches.forEach((sw, i) => {
-      sw.hex = adjustBase[i];
-      applySwatch(document.querySelectorAll('.swatch')[i], sw.hex);
-    });
-    closeAdjustPanel();
-  } else {
-    openAdjustPanel();
-  }
-});
-
-Object.values(sliders).forEach(s => {
-  s.el.addEventListener('input', () => { updateFill(s); previewAdjustments(); });
-});
-
-document.getElementById('adjust-cancel').addEventListener('click', () => {
-  swatches.forEach((sw, i) => {
-    sw.hex = adjustBase[i];
-    applySwatch(document.querySelectorAll('.swatch')[i], sw.hex);
-  });
-  closeAdjustPanel();
-});
-
-document.getElementById('adjust-apply').addEventListener('click', () => {
-  pushHistory();
-  closeAdjustPanel();
-  updateURL();
-  showToast('Adjustments applied');
-});
-
-document.addEventListener('click', () => {
-  if (adjustPanel.classList.contains('open')) {
-    swatches.forEach((sw, i) => {
-      sw.hex = adjustBase[i];
-      applySwatch(document.querySelectorAll('.swatch')[i], sw.hex);
-    });
-    closeAdjustPanel();
-  }
-});
-adjustPanel.addEventListener('click', e => e.stopPropagation());
-
-// init fills
-Object.values(sliders).forEach(s => updateFill(s));
-
-// ── Color picker ─────────────────────────────────────────────────────────────
-
-let cpIdx      = null;
-let cpOnChange = null;  // callback(hex) for non-swatch uses of the picker
-let cpH = 0, cpS = 100, cpV = 100, cpA = 100;
-let cpDragging = false;
-
-const cpEl      = document.getElementById('color-picker');
-const cpArea    = document.getElementById('cp-area');
-const cpCursor  = document.getElementById('cp-cursor');
-const cpHueEl   = document.getElementById('cp-hue');
-const cpHexEl   = document.getElementById('cp-hex');
-const cpPreview = document.getElementById('cp-preview');
-const cpTextEl  = document.getElementById('cp-color-text');
-
-function hsvToRgb(h, s, v) {
-  s /= 100; v /= 100;
-  const i = Math.floor(h / 60) % 6;
-  const f = h / 60 - Math.floor(h / 60);
-  const p = v * (1 - s), q = v * (1 - f * s), t = v * (1 - (1 - f) * s);
-  return [[v,t,p],[q,v,p],[p,v,t],[p,q,v],[t,p,v],[v,p,q]][i].map(c => Math.round(c * 255));
-}
-
-function rgbToHsv(r, g, b) {
-  r /= 255; g /= 255; b /= 255;
-  const max = Math.max(r,g,b), min = Math.min(r,g,b), d = max - min;
-  let h = 0;
-  if (d) {
-    if (max === r)      h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
-    else if (max === g) h = ((b - r) / d + 2) / 6;
-    else                h = ((r - g) / d + 4) / 6;
-  }
-  return [h * 360, max ? (d / max) * 100 : 0, max * 100];
-}
-
-function cpRgbToHex(r, g, b) {
-  return '#' + [r,g,b].map(c => Math.max(0,Math.min(255,Math.round(c))).toString(16).padStart(2,'0')).join('');
-}
-
-function cpHexToRgb(hex) {
-  hex = hex.replace('#','');
-  return [parseInt(hex.slice(0,2),16), parseInt(hex.slice(2,4),16), parseInt(hex.slice(4,6),16)];
-}
-
-function cpUpdateUI(skipHex) {
-  const [r, g, b] = hsvToRgb(cpH, cpS, cpV);
-  const hex = cpRgbToHex(r, g, b);
-
-  cpArea.style.setProperty('--cp-h', cpH);
-  cpCursor.style.left = cpS + '%';
-  cpCursor.style.top  = (100 - cpV) + '%';
-
-  if (!skipHex) cpHexEl.value = hex.toUpperCase();
-  cpPreview.style.background = hex;
-  if (document.activeElement !== cpTextEl)
-    cpTextEl.value = `rgba(${r}, ${g}, ${b}, ${(cpA / 100).toFixed(2)})`;
-  cpTextEl.classList.remove('invalid');
-
-  if (cpOnChange) {
-    cpOnChange(hex);
-  } else if (cpIdx !== null && !isAdjusting && !isContrasting) {
-    swatches[cpIdx].hex = hex;
-    applySwatch(document.querySelectorAll('.swatch')[cpIdx], hex);
-    updateURL();
-  }
-}
-
-function cpSetFromPointer(e) {
-  const rect = cpArea.getBoundingClientRect();
-  cpS = Math.max(0, Math.min(1, (e.clientX - rect.left)  / rect.width))  * 100;
-  cpV = Math.max(0, Math.min(1, 1 - (e.clientY - rect.top) / rect.height)) * 100;
-  cpUpdateUI();
-}
-
-cpArea.addEventListener('mousedown', e => { cpDragging = true; cpSetFromPointer(e); e.preventDefault(); });
-document.addEventListener('mousemove', e => { if (cpDragging) cpSetFromPointer(e); });
-document.addEventListener('mouseup',   () => { cpDragging = false; });
-
-cpHueEl.addEventListener('input', () => { cpH = +cpHueEl.value; cpUpdateUI(); });
-
-cpHexEl.addEventListener('input', () => {
-  let v = cpHexEl.value.trim();
-  if (!v.startsWith('#')) v = '#' + v;
-  if (/^#[0-9a-f]{6}$/i.test(v)) {
-    [cpH, cpS, cpV] = rgbToHsv(...cpHexToRgb(v));
-    cpUpdateUI(true);
-  }
-});
-
-function cpParseText(raw) {
-  raw = raw.trim();
-  let m;
-  // rgba(r, g, b, a) or rgb(r, g, b)
-  m = raw.match(/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)(?:\s*,\s*([\d.]+))?\s*\)/i);
-  if (m) return [+m[1], +m[2], +m[3], m[4] != null ? Math.round(+m[4] * 100) : 100];
-  // #rrggbb or #rgb
-  m = raw.match(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i);
-  if (m) {
-    const h = m[1].length === 3
-      ? m[1].split('').map(c => c + c).join('')
-      : m[1];
-    return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16), 100];
-  }
-  // r, g, b  or  r g b  or  r, g, b, a
-  m = raw.match(/^([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)(?:[\s,]+([\d.]+))?$/);
-  if (m) return [+m[1], +m[2], +m[3], m[4] != null ? Math.round(+m[4] * 100) : 100];
-  return null;
-}
-
-cpTextEl.addEventListener('input', () => {
-  const parsed = cpParseText(cpTextEl.value);
-  if (!parsed) { cpTextEl.classList.add('invalid'); return; }
-  cpTextEl.classList.remove('invalid');
-  const [r, g, b, a] = parsed;
-  cpA = Math.max(0, Math.min(100, a));
-  [cpH, cpS, cpV] = rgbToHsv(
-    Math.max(0, Math.min(255, r)),
-    Math.max(0, Math.min(255, g)),
-    Math.max(0, Math.min(255, b))
-  );
-  cpUpdateUI();
-});
-
-document.getElementById('cp-copy').addEventListener('click', () => {
-  navigator.clipboard.writeText(cpHexEl.value);
-  showToast('Hex copied!');
-});
-
-document.getElementById('cp-copy-rgba').addEventListener('click', () => {
-  navigator.clipboard.writeText(cpTextEl.value);
-  showToast('RGBA copied!');
-});
-
-function openPicker(idx, triggerEl, onchange) {
-  // idx can be a swatch index (number) or an initial hex string when using callback mode
-  cpOnChange = onchange || null;
-  if (typeof idx === 'number') {
-    pushHistory();          // snapshot before color pick changes anything
-    cpIdx = idx;
-    [cpH, cpS, cpV] = rgbToHsv(...cpHexToRgb(swatches[idx].hex));
-  } else {
-    cpIdx = null;
-    [cpH, cpS, cpV] = rgbToHsv(...cpHexToRgb(idx || '#e05555'));
-  }
-  cpA = 100;
-  cpHueEl.value = cpH;
-  cpUpdateUI();
-  cpEl.classList.add('open');
-
-  requestAnimationFrame(() => {
-    const rect = triggerEl.getBoundingClientRect();
-    const pw = cpEl.offsetWidth, ph = cpEl.offsetHeight;
-    let left = rect.left + rect.width / 2 - pw / 2;
-    let top  = rect.top - ph - 10;
-    left = Math.max(8, Math.min(left, window.innerWidth  - pw - 8));
-    top  = top < 8 ? rect.bottom + 10 : top;
-    cpEl.style.left = left + 'px';
-    cpEl.style.top  = top  + 'px';
-  });
-}
-
-function closePicker() { cpEl.classList.remove('open'); cpIdx = null; cpOnChange = null; }
-
-document.addEventListener('click', e => {
-  if (cpEl.classList.contains('open') && !cpEl.contains(e.target) && !e.target.closest('.pick-btn, .pb-color-btn'))
-    closePicker();
-});
-cpEl.addEventListener('click', e => e.stopPropagation());
-
-// ── Contrast tool ────────────────────────────────────────────────────────────
-
-const contrastBtn   = document.getElementById('contrast-btn');
-const contrastPanel = document.getElementById('contrast-panel');
-let contrastBase    = [];
-let isContrasting   = false;
-
-const conSlider = {
-  el:   document.getElementById('sl-con'),
-  val:  document.getElementById('con-val'),
-  fill: document.getElementById('con-fill'),
-};
-
-function applyContrast(hexes, strength) {
-  const n = hexes.length;
-  if (n < 2 || strength === 0) return hexes.slice();
-
-  const okl = hexes.map(h => hexToOklch(h));
-  const L   = okl.map(c => c[0]);
-  // Oklab a,b components — fixed (hue/chroma never change)
-  const ab  = okl.map(([, C, H]) => {
-    const r = H * Math.PI / 180;
-    return [C * Math.cos(r), C * Math.sin(r)];
-  });
-
-  // Compute all-pairs Oklab distances to derive an adaptive target.
-  // Using all pairs (not just adjacent) so qualitative palettes also benefit.
-  const dists = [];
-  for (let i = 0; i < n; i++)
-    for (let j = i + 1; j < n; j++) {
-      const dL = L[i] - L[j];
-      const [a1, b1] = ab[i], [a2, b2] = ab[j];
-      dists.push(Math.sqrt(dL * dL + (a1 - a2) ** 2 + (b1 - b2) ** 2));
-    }
-  dists.sort((a, b) => a - b);
-  const median = dists[Math.floor(dists.length / 2)];
-
-  // At strength=100: push all pairs below 1.5× median up to that level.
-  // Pairs already above the threshold are untouched.
-  const target = median * 1.5 * (strength / 100);
-
-  // Multi-pass constraint satisfaction: fix violating pairs, let cascade propagate.
-  for (let pass = 0; pass < 30; pass++) {
-    let changed = false;
-
-    for (let i = 0; i < n; i++) {
-      for (let j = i + 1; j < n; j++) {
-        const [a1, b1] = ab[i], [a2, b2] = ab[j];
-        const dab2 = (a1 - a2) ** 2 + (b1 - b2) ** 2;
-        if (dab2 >= target * target) continue;
-
-        const neededDL = Math.sqrt(Math.max(0, target * target - dab2));
-        const currentDL = Math.abs(L[j] - L[i]);
-        if (currentDL >= neededDL) continue;
-
-        const deficit = neededDL - currentDL;
-        const sign    = L[i] <= L[j] ? 1 : -1;
-        L[i] = Math.max(0.03, Math.min(0.97, L[i] - sign * deficit * 0.5));
-        L[j] = Math.max(0.03, Math.min(0.97, L[j] + sign * deficit * 0.5));
-        changed = true;
-      }
-    }
-
-    if (!changed) break;
-  }
-
-  return okl.map(([, c, h], i) => oklchToHex(L[i], c, h));
-}
-
-function previewContrast() {
-  const strength = +conSlider.el.value;
-  const els = document.querySelectorAll('.swatch');
-  const adjusted = applyContrast(contrastBase, strength);
-  adjusted.forEach((hex, i) => {
-    swatches[i].hex = hex;
-    applySwatch(els[i], hex);
-    els[i].querySelector('.swatch-original-bg').style.backgroundColor = contrastBase[i];
-  });
-}
-
-function openContrastPanel() {
-  closeOklchPanel(false);
-  contrastBase = swatches.map(s => s.hex);
-  conSlider.el.value = 0;
-  updateFill(conSlider);
-  document.querySelectorAll('.swatch').forEach((el, i) => {
-    el.querySelector('.swatch-original-bg').style.backgroundColor = contrastBase[i];
-  });
-  isContrasting = true;
-  document.getElementById('palette').classList.add('adjusting');
-  contrastPanel.classList.add('open');
-  contrastBtn.classList.add('active');
-  adjustPanel.classList.remove('open');
-  adjustBtn.classList.remove('active');
-}
-
-function closeContrastPanel(revert) {
-  if (revert) {
-    contrastBase.forEach((hex, i) => {
-      swatches[i].hex = hex;
-      applySwatch(document.querySelectorAll('.swatch')[i], hex);
-    });
-  }
-  isContrasting = false;
-  document.getElementById('palette').classList.remove('adjusting');
-  contrastPanel.classList.remove('open');
-  contrastBtn.classList.remove('active');
-}
-
-conSlider.el.addEventListener('input', () => {
-  updateFill(conSlider);
-  conSlider.val.textContent = conSlider.el.value;
-  previewContrast();
-});
-
-
-contrastBtn.addEventListener('click', e => {
-  e.stopPropagation();
-  if (contrastPanel.classList.contains('open')) {
-    closeContrastPanel(true);
-  } else {
-    openContrastPanel();
-  }
-});
-
-document.getElementById('contrast-cancel').addEventListener('click', () => closeContrastPanel(true));
-
-document.getElementById('contrast-apply').addEventListener('click', () => {
-  pushHistory();
-  closeContrastPanel(false);
-  updateURL();
-  showToast('Contrast applied');
-});
-
-document.addEventListener('click', e => {
-  if (contrastPanel.classList.contains('open')) {
-    closeContrastPanel(true);
-  }
-});
-contrastPanel.addEventListener('click', e => e.stopPropagation());
-
-// ── OKLCH panel ───────────────────────────────────────────────────────────────
-
-let oklchParams = { L: 0.65, C: 0.18, H: 180, scale: 'hue' };
-let oklchBase   = [];
-
-const oklchPanel = document.getElementById('oklch-panel');
-const oklchSliders = {
-  l: { el: document.getElementById('sl-oklch-l'), val: document.getElementById('oklch-l-val'), fill: document.getElementById('oklch-l-fill') },
-  c: { el: document.getElementById('sl-oklch-c'), val: document.getElementById('oklch-c-val'), fill: document.getElementById('oklch-c-fill') },
-  h: { el: document.getElementById('sl-oklch-h'), val: document.getElementById('oklch-h-val'), fill: document.getElementById('oklch-h-fill') },
-};
-
-function updateOklchFills() {
-  const pct = (el, min, max) => ((el.value - min) / (max - min) * 100).toFixed(1) + '%';
-  oklchSliders.l.fill.style.left  = '0';
-  oklchSliders.l.fill.style.width = pct(oklchSliders.l.el, 10, 90);
-  oklchSliders.c.fill.style.left  = '0';
-  oklchSliders.c.fill.style.width = pct(oklchSliders.c.el, 0, 35);
-  oklchSliders.h.fill.style.left  = '0';
-  oklchSliders.h.fill.style.width = pct(oklchSliders.h.el, 0, 359);
-}
-
-function syncOklchSliders() {
-  oklchSliders.l.el.value = Math.round(oklchParams.L * 100);
-  oklchSliders.c.el.value = Math.round(oklchParams.C * 100);
-  oklchSliders.h.el.value = Math.round(oklchParams.H);
-  oklchSliders.l.val.textContent = oklchSliders.l.el.value;
-  oklchSliders.c.val.textContent = oklchSliders.c.el.value;
-  oklchSliders.h.val.textContent = oklchSliders.h.el.value;
-  updateOklchFills();
-}
-
-function previewOklch() {
-  oklchParams.L = oklchSliders.l.el.value / 100;
-  oklchParams.C = oklchSliders.c.el.value / 100;
-  oklchParams.H = +oklchSliders.h.el.value;
-  oklchSliders.l.val.textContent = oklchSliders.l.el.value;
-  oklchSliders.c.val.textContent = oklchSliders.c.el.value;
-  oklchSliders.h.val.textContent = oklchSliders.h.el.value;
-  updateOklchFills();
-  const newColors = generatePalette(swatches.length);
-  const els = document.querySelectorAll('.swatch');
-  swatches.forEach((sw, i) => { sw.hex = newColors[i]; applySwatch(els[i], sw.hex); });
-}
-
-function openOklchPanel() {
-  oklchBase = swatches.map(s => ({ ...s }));
-  const target = (oklchParams.scale === 'lightness' || oklchParams.scale === 'chroma') ? 8 : swatches.length;
-  if (swatches.length !== target) {
-    swatches = Array.from({ length: target }, () => ({ hex: '#888888' }));
-    renderPalette();
-  }
-  syncOklchSliders();
-  updateOklchScaleUI();
-  previewOklch();
-  oklchPanel.classList.add('open');
-}
-
-function closeOklchPanel(revert) {
-  if (revert && oklchBase.length) {
-    swatches = oklchBase.map(s => ({ ...s }));
-    renderPalette();
-  }
-  oklchPanel.classList.remove('open');
-}
-
-const oklchScaleLabels = {
-  hue:       { l: 'Lightness', c: 'Chroma',  h: 'Hue start' },
-  lightness: { l: 'L center',  c: 'Chroma',  h: 'Hue'       },
-  chroma:    { l: 'Lightness', c: 'C max',   h: 'Hue'       },
-};
-
-function updateOklchScaleUI() {
-  const lbl = oklchScaleLabels[oklchParams.scale];
-  document.getElementById('oklch-l-label').textContent = lbl.l;
-  document.getElementById('oklch-c-label').textContent = lbl.c;
-  document.getElementById('oklch-h-label').textContent = lbl.h;
-  oklchPanel.querySelectorAll('.dir-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.scale === oklchParams.scale);
-  });
-}
-
-oklchPanel.querySelectorAll('.dir-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    oklchParams.scale = btn.dataset.scale;
-    updateOklchScaleUI();
-    const target = (oklchParams.scale === 'lightness' || oklchParams.scale === 'chroma') ? 8 : swatches.length;
-    if (swatches.length !== target) {
-      swatches = Array.from({ length: target }, () => ({ hex: '#888888' }));
-      renderPalette();
-    }
-    previewOklch();
-  });
-});
-
-Object.values(oklchSliders).forEach(s => {
-  s.el.addEventListener('input', previewOklch);
-});
-
-document.getElementById('oklch-cancel').addEventListener('click', () => {
-  closeOklchPanel(true);
-});
-
-document.getElementById('oklch-apply').addEventListener('click', () => {
-  pushHistory();
-  closeOklchPanel(false);
-  updateURL();
-  showToast('Applied');
-});
-
-oklchPanel.addEventListener('click', e => e.stopPropagation());
-
-// Set OKLCH hue gradient on the generation panel hue track
-(function() {
-  const stops = Array.from({length: 13}, (_, i) => oklchToHex(0.65, 0.22, i * 30)).join(',');
-  document.getElementById('oklch-gen-hue-track').style.background = `linear-gradient(to right,${stops})`;
-})();
-
-// ── Divider count picker ──────────────────────────────────────────────────────
-
-let dcpAfterIdx = null;
-
-function openCountPicker(afterIdx, triggerBtn) {
-  dcpAfterIdx = afterIdx;
-  const picker = document.getElementById('divider-count-picker');
-  picker.classList.add('open');
-  requestAnimationFrame(() => {
-    const rect = triggerBtn.getBoundingClientRect();
-    const ph = picker.offsetHeight;
-    let top = rect.top - ph - 10;
-    if (top < 8) top = rect.bottom + 10;
-    picker.style.left = (rect.left + rect.width / 2) + 'px';
-    picker.style.top  = top + 'px';
-  });
-}
-
-function closeCountPicker() {
-  document.getElementById('divider-count-picker').classList.remove('open');
-  dcpAfterIdx = null;
-}
-
-(function buildCountPicker() {
-  const picker = document.getElementById('divider-count-picker');
-  for (let n = 1; n <= 8; n++) {
-    const b = document.createElement('button');
-    b.className = 'dcp-btn';
-    b.textContent = n;
-    b.addEventListener('mouseup', e => {
-      e.stopPropagation();
-      if (dcpAfterIdx !== null) insertNSwatches(dcpAfterIdx, n);
-      closeCountPicker();
-    });
-    picker.appendChild(b);
-  }
-})();
-
-document.getElementById('divider-count-picker').addEventListener('click', e => e.stopPropagation());
-document.addEventListener('click', () => closeCountPicker());
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCountPicker(); });
-
-// ─────────────────────────────────────────────────────────────────────────────
-
-initPalette();
-</script>
+<script src="src/config/constants.js"></script>
+<script src="src/utils/color.js"></script>
+<script src="src/services/palette-data.js"></script>
+<script src="src/components/palette-view.js"></script>
+<script src="src/components/count-picker.js"></script>
+<script src="src/components/adjust-panel.js"></script>
+<script src="src/components/color-picker.js"></script>
+<script src="src/components/contrast-panel.js"></script>
+<script src="src/components/oklch-panel.js"></script>
+<script src="src/components/palette-browser.js"></script>
+<script src="src/components/export-panel.js"></script>
+<script src="src/main.js"></script>
 </body>
 </html>
