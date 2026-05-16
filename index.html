@@ -77,7 +77,7 @@
     overflow: hidden;
   }
 
-  .swatch:hover { flex: 1.18; }
+  .swatch:hover { flex: 1; }
 
   .swatch-bg {
     position: absolute;
@@ -287,7 +287,7 @@
     padding-bottom: 1px;
   }
 
-  .divider-btn:hover { background: #f0f0f0; transform: scale(1.1) !important; }
+  .divider-btn:hover { background: #f0f0f0; }
   .divider-btn:active { transform: scale(0.95) !important; }
 
   .swatch:hover + .divider .divider-btn,
@@ -299,6 +299,34 @@
 
   .swatch.dragging { opacity: 0.4; }
   .swatch.drag-over { outline: 2px dashed rgba(255,255,255,0.5); outline-offset: -3px; }
+
+  #divider-count-picker {
+    position: fixed;
+    display: none;
+    flex-direction: column-reverse;
+    background: #fff;
+    border-radius: 22px;
+    padding: 6px;
+    gap: 2px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+    z-index: 200;
+    transform: translateX(-50%);
+  }
+  #divider-count-picker.open { display: flex; }
+
+  .dcp-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: #111;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 100ms, color 100ms;
+  }
+  .dcp-btn:hover { background: #111; color: #fff; }
 
   #bar {
     height: var(--bar-h);
@@ -542,6 +570,8 @@
   .pb-item:hover { background: #1f1f1f; }
   .pb-item.active { background: #202020; }
   .pb-item.active .pb-name { color: #f0f0f0; }
+  .pb-item.kb-focus { background: #252525; outline: 1px solid #3a3a3a; outline-offset: -1px; }
+  .pb-item.kb-focus .pb-name { color: #f0f0f0; }
 
   .pb-name {
     font-family: 'DM Sans', sans-serif;
@@ -697,6 +727,22 @@
   #adjust-btn:hover, #adjust-btn.active { border-color: #444; color: var(--ctrl-text); }
   #adjust-btn.active { background: #1a1a1a; }
   #adjust-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+  #undo-btn, #redo-btn {
+    width: 28px; height: 28px;
+    padding: 0;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    color: var(--ctrl-muted);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 150ms, color 150ms;
+    flex-shrink: 0;
+  }
+  #undo-btn:hover:not(:disabled), #redo-btn:hover:not(:disabled) { border-color: #333; color: var(--ctrl-text); }
+  #undo-btn:disabled, #redo-btn:disabled { opacity: 0.28; cursor: default; }
+  #undo-btn svg, #redo-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
   #adjust-panel {
     position: fixed;
@@ -1128,6 +1174,13 @@
   <div class="bar-right">
     <span class="hint"><kbd>space</kbd> to generate</span>
     <div class="bar-sep"></div>
+    <button id="undo-btn" title="Undo (Ctrl+Z)" disabled>
+      <svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
+    </button>
+    <button id="redo-btn" title="Redo (Ctrl+Y)" disabled>
+      <svg viewBox="0 0 24 24"><path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg>
+    </button>
+    <div class="bar-sep"></div>
     <button id="adjust-btn">
       <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="8" cy="6" r="2" fill="var(--ctrl-bg)"/><circle cx="16" cy="12" r="2" fill="var(--ctrl-bg)"/><circle cx="10" cy="18" r="2" fill="var(--ctrl-bg)"/></svg>
       Adjust
@@ -1320,6 +1373,8 @@
   </div>
 </div>
 
+<div id="divider-count-picker"></div>
+
 <div id="color-picker">
   <div class="cp-area" id="cp-area">
     <div class="cp-cursor" id="cp-cursor"></div>
@@ -1508,9 +1563,9 @@ function generatePalette(count) {
         cc = C;
         hc = H;
       } else if (scale === 'chroma') {
-        // C varies from 0 → C; C slider controls maximum chroma
+        // C varies from a near-zero tint → C max; avoids a pure gray first swatch
         lc = L;
-        cc = t * C;
+        cc = 0.06 + t * (C - 0.06);
         hc = H;
       } else {
         // Hue scale: hues evenly spaced, L and C fixed
@@ -1555,6 +1610,45 @@ function updateURL() {
   history.replaceState(null, '', '#' + hash);
 }
 
+// ── Undo / Redo ──────────────────────────────────────────────────────────────
+
+let historyStack = [];
+let redoStack    = [];
+
+function pushHistory() {
+  historyStack.push(swatches.map(s => s.hex));
+  redoStack = [];
+  updateUndoRedo();
+}
+
+function updateUndoRedo() {
+  const undoBtn = document.getElementById('undo-btn');
+  const redoBtn = document.getElementById('redo-btn');
+  if (undoBtn) undoBtn.disabled = historyStack.length === 0;
+  if (redoBtn) redoBtn.disabled = redoStack.length === 0;
+}
+
+function applyHistory(hexes) {
+  swatches = hexes.map(hex => ({ hex }));
+  renderPalette();
+  updateURL();
+  updateSelectorBtn();
+}
+
+function undo() {
+  if (isAdjusting || isContrasting || historyStack.length === 0) return;
+  redoStack.push(swatches.map(s => s.hex));
+  applyHistory(historyStack.pop());
+  updateUndoRedo();
+}
+
+function redo() {
+  if (isAdjusting || isContrasting || redoStack.length === 0) return;
+  historyStack.push(swatches.map(s => s.hex));
+  applyHistory(redoStack.pop());
+  updateUndoRedo();
+}
+
 function parseHash() {
   const raw = window.location.hash.slice(1);
   if (!raw) return null;
@@ -1565,30 +1659,50 @@ function parseHash() {
 }
 
 function generate() {
+  pushHistory();
   activePalette = null;
   if (typeof updateSelectorBtn === 'function') updateSelectorBtn();
   if (mode === 'perceptual') {
-    oklchParams.L = rand(52, 72) / 100;
-    oklchParams.C = rand(13, 22) / 100;
+    oklchParams.L = rand(55, 72) / 100;
+    oklchParams.C = rand(18, 28) / 100;
     oklchParams.H = rand(0, 359);
     if (typeof syncOklchSliders === 'function') syncOklchSliders();
   }
-  const count = mode === 'perceptual' ? 12 : swatches.length;
-  const newColors = generatePalette(count);
-  if (count !== swatches.length) {
-    swatches = newColors.map(hex => ({ hex }));
-    renderPalette();
-  } else {
-    const els = document.querySelectorAll('.swatch');
-    swatches.forEach((sw, i) => {
-      sw.hex = newColors[i];
-      applySwatch(els[i], sw.hex);
-    });
-  }
+  const newColors = generatePalette(swatches.length);
+  const els = document.querySelectorAll('.swatch');
+  swatches.forEach((sw, i) => {
+    sw.hex = newColors[i];
+    applySwatch(els[i], sw.hex);
+  });
+  updateURL();
+}
+
+function interpolateOklab(hex1, hex2, t) {
+  const [L1,C1,H1] = hexToOklch(hex1);
+  const [L2,C2,H2] = hexToOklch(hex2);
+  const r1 = H1*Math.PI/180, r2 = H2*Math.PI/180;
+  const a1 = C1*Math.cos(r1), b1 = C1*Math.sin(r1);
+  const a2 = C2*Math.cos(r2), b2 = C2*Math.sin(r2);
+  const L = L1+(L2-L1)*t, a = a1+(a2-a1)*t, b = b1+(b2-b1)*t;
+  const C = Math.sqrt(a*a+b*b);
+  const H = (Math.atan2(b,a)*180/Math.PI+360)%360;
+  return oklchToHex(L, C, H);
+}
+
+function insertNSwatches(afterIdx, n) {
+  pushHistory();
+  const hex1 = swatches[afterIdx].hex;
+  const hex2 = swatches[afterIdx + 1].hex;
+  const inserts = Array.from({length: n}, (_, i) => ({
+    hex: interpolateOklab(hex1, hex2, (i+1)/(n+1))
+  }));
+  swatches.splice(afterIdx + 1, 0, ...inserts);
+  renderPalette();
   updateURL();
 }
 
 function insertSwatch(afterIdx) {
+  pushHistory();
   const hex1 = swatches[afterIdx].hex;
   const hex2 = swatches[afterIdx + 1].hex;
   const newHex = blendHex(hex1, hex2);
@@ -1608,6 +1722,7 @@ function extrapolateHex(anchorHex, neighborHex) {
 }
 
 function insertSwatchAtStart() {
+  pushHistory();
   const newHex = swatches.length >= 2
     ? extrapolateHex(swatches[0].hex, swatches[1].hex)
     : hslToHex(...hexToHsl(swatches[0].hex).map((v, i) => i === 0 ? (v + 30) % 360 : v));
@@ -1617,6 +1732,7 @@ function insertSwatchAtStart() {
 }
 
 function insertSwatchAtEnd() {
+  pushHistory();
   const n = swatches.length;
   const newHex = n >= 2
     ? extrapolateHex(swatches[n - 1].hex, swatches[n - 2].hex)
@@ -1628,6 +1744,7 @@ function insertSwatchAtEnd() {
 
 function deleteSwatch(idx) {
   if (swatches.length <= 2) { showToast('Need at least 2 colors'); return; }
+  pushHistory();
   swatches.splice(idx, 1);
   renderPalette();
   updateURL();
@@ -1678,10 +1795,13 @@ function createSwatchEl(idx) {
   inp.addEventListener('focus', () => { inp.select(); el.draggable = false; });
   inp.addEventListener('blur', () => { el.draggable = true; inp.classList.remove('invalid'); });
 
+  inp._histPushed = false;
+  inp.addEventListener('focus', () => { inp._histPushed = false; });
   inp.addEventListener('input', () => {
     let val = inp.value.trim();
     if (!val.startsWith('#')) val = '#' + val;
     if (/^#[0-9a-f]{6}$/i.test(val)) {
+      if (!inp._histPushed) { pushHistory(); inp._histPushed = true; }
       inp.classList.remove('invalid');
       swatches[idx].hex = val.toLowerCase();
       el.querySelector('.swatch-bg').style.backgroundColor = val;
@@ -1717,6 +1837,7 @@ function createSwatchEl(idx) {
     e.preventDefault();
     el.classList.remove('drag-over');
     if (dragSrc !== null && dragSrc !== idx) {
+      pushHistory();
       [swatches[dragSrc], swatches[idx]] = [swatches[idx], swatches[dragSrc]];
       renderPalette();
       updateURL();
@@ -1731,10 +1852,21 @@ function createSwatchEl(idx) {
 function createDividerEl(afterIdx) {
   const el = document.createElement('div');
   el.className = 'divider';
-  el.innerHTML = `<button class="divider-btn" aria-label="Add color between">+</button>`;
-  el.querySelector('.divider-btn').addEventListener('click', e => {
+  el.innerHTML = `<button class="divider-btn" aria-label="Add color between" title="Add · Hold for more">+</button>`;
+  const btn = el.querySelector('.divider-btn');
+  let holdTimer = null;
+  let didHold   = false;
+
+  btn.addEventListener('mousedown', e => {
+    if (e.button !== 0) return;
+    didHold = false;
+    holdTimer = setTimeout(() => { didHold = true; openCountPicker(afterIdx, btn); }, 350);
+  });
+  btn.addEventListener('mouseup',    () => clearTimeout(holdTimer));
+  btn.addEventListener('mouseleave', () => clearTimeout(holdTimer));
+  btn.addEventListener('click', e => {
     e.stopPropagation();
-    insertSwatch(afterIdx);
+    if (!didHold) insertSwatch(afterIdx);
   });
   return el;
 }
@@ -1770,6 +1902,21 @@ function renderPalette() {
   });
   container.appendChild(createEdgeBtn(false));
   updateSwatchMode();
+  // Re-sync panel state when swatch count changes mid-session
+  if (isAdjusting) {
+    adjustBase = swatches.map(s => s.hex);
+    document.querySelectorAll('.swatch').forEach((el, i) => {
+      el.querySelector('.swatch-original-bg').style.backgroundColor = adjustBase[i];
+    });
+    previewAdjustments();
+  }
+  if (isContrasting) {
+    contrastBase = swatches.map(s => s.hex);
+    document.querySelectorAll('.swatch').forEach((el, i) => {
+      el.querySelector('.swatch-original-bg').style.backgroundColor = contrastBase[i];
+    });
+    previewContrast();
+  }
 }
 
 window.addEventListener('resize', updateSwatchMode);
@@ -1801,7 +1948,12 @@ document.addEventListener('keydown', e => {
     e.preventDefault();
     generate();
   }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); redo(); }
 });
+
+document.getElementById('undo-btn').addEventListener('click', undo);
+document.getElementById('redo-btn').addEventListener('click', redo);
 
 // ── Palette browser ──────────────────────────────────────────────────────────
 
@@ -1879,6 +2031,7 @@ function buildPbItems(filtered, append) {
     const dots = colors.map(c => `<span class="pb-dot" style="background:#${c}"></span>`).join('');
     el.innerHTML = `<span class="pb-name">${name}</span><div class="pb-dots">${dots}</div>`;
     el.addEventListener('click', () => {
+      pushHistory();
       activePalette = entry;
       const hexes = colorsStr.split(',').map(c => '#' + c);
       swatches = hexes.map(hex => ({ hex }));
@@ -1929,10 +2082,13 @@ function openPaletteBrowser() {
   pbOpen = true;
   renderPbList(false);
   pbSearch.focus();
-  // scroll active item into view
+  // focus and scroll active item into view
   requestAnimationFrame(() => {
     const active = pbList.querySelector('.pb-item.active');
-    if (active) active.scrollIntoView({ block: 'center' });
+    if (active) {
+      active.classList.add('kb-focus');
+      active.scrollIntoView({ block: 'center' });
+    }
   });
 }
 
@@ -1957,7 +2113,31 @@ pbSearch.addEventListener('input', () => {
   renderPbList(false);
 });
 
-pbSearch.addEventListener('keydown', e => e.stopPropagation());
+pbSearch.addEventListener('keydown', e => {
+  e.stopPropagation();
+  if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'Enter') return;
+
+  const items = [...pbList.querySelectorAll('.pb-item')];
+  if (!items.length) return;
+
+  const focused = pbList.querySelector('.pb-item.kb-focus');
+  const idx     = focused ? items.indexOf(focused) : -1;
+
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    (focused || items[0])?.click();
+    return;
+  }
+
+  e.preventDefault();
+  const next = e.key === 'ArrowDown'
+    ? items[Math.min(idx + 1, items.length - 1)]
+    : items[Math.max(idx - 1, 0)];
+
+  if (focused) focused.classList.remove('kb-focus');
+  next.classList.add('kb-focus');
+  next.scrollIntoView({ block: 'nearest' });
+});
 
 document.querySelectorAll('.pb-filter-chip').forEach(chip => {
   chip.addEventListener('click', () => {
@@ -2042,7 +2222,7 @@ document.getElementById('copy-rgb').addEventListener('click', () => {
     const r = parseInt(s.hex.slice(1,3),16);
     const g = parseInt(s.hex.slice(3,5),16);
     const b = parseInt(s.hex.slice(5,7),16);
-    return `rgb(${r}, ${g}, ${b})`;
+    return `"rgb(${r}, ${g}, ${b})"`;
   }).join(', ');
   navigator.clipboard.writeText(list);
   showToast('RGB list copied!');
@@ -2054,7 +2234,7 @@ document.getElementById('copy-rgba').addEventListener('click', () => {
     const r = parseInt(s.hex.slice(1,3),16);
     const g = parseInt(s.hex.slice(3,5),16);
     const b = parseInt(s.hex.slice(5,7),16);
-    return `rgba(${r}, ${g}, ${b}, 1)`;
+    return `"rgba(${r}, ${g}, ${b}, 1)"`;
   }).join(', ');
   navigator.clipboard.writeText(list);
   showToast('RGBA list copied!');
@@ -2068,7 +2248,7 @@ document.getElementById('copy-url').addEventListener('click', () => {
 });
 
 document.getElementById('copy-hex').addEventListener('click', () => {
-  navigator.clipboard.writeText(swatches.map(s => s.hex.toUpperCase()).join(', '));
+  navigator.clipboard.writeText(swatches.map(s => `"${s.hex.toUpperCase()}"`).join(', '));
   showToast('HEX codes copied!');
   exportPanel.classList.remove('open');
 });
@@ -2242,6 +2422,7 @@ document.getElementById('adjust-cancel').addEventListener('click', () => {
 });
 
 document.getElementById('adjust-apply').addEventListener('click', () => {
+  pushHistory();
   closeAdjustPanel();
   updateURL();
   showToast('Adjustments applied');
@@ -2398,6 +2579,7 @@ function openPicker(idx, triggerEl, onchange) {
   // idx can be a swatch index (number) or an initial hex string when using callback mode
   cpOnChange = onchange || null;
   if (typeof idx === 'number') {
+    pushHistory();          // snapshot before color pick changes anything
     cpIdx = idx;
     [cpH, cpS, cpV] = rgbToHsv(...cpHexToRgb(swatches[idx].hex));
   } else {
@@ -2557,6 +2739,7 @@ contrastBtn.addEventListener('click', e => {
 document.getElementById('contrast-cancel').addEventListener('click', () => closeContrastPanel(true));
 
 document.getElementById('contrast-apply').addEventListener('click', () => {
+  pushHistory();
   closeContrastPanel(false);
   updateURL();
   showToast('Contrast applied');
@@ -2609,20 +2792,21 @@ function previewOklch() {
   oklchSliders.c.val.textContent = oklchSliders.c.el.value;
   oklchSliders.h.val.textContent = oklchSliders.h.el.value;
   updateOklchFills();
-  const newColors = generatePalette(12);
-  if (swatches.length !== 12) {
-    swatches = newColors.map(hex => ({ hex }));
-    renderPalette();
-  } else {
-    const els = document.querySelectorAll('.swatch');
-    swatches.forEach((sw, i) => { sw.hex = newColors[i]; applySwatch(els[i], sw.hex); });
-  }
+  const newColors = generatePalette(swatches.length);
+  const els = document.querySelectorAll('.swatch');
+  swatches.forEach((sw, i) => { sw.hex = newColors[i]; applySwatch(els[i], sw.hex); });
 }
 
 function openOklchPanel() {
   oklchBase = swatches.map(s => ({ ...s }));
+  const target = (oklchParams.scale === 'lightness' || oklchParams.scale === 'chroma') ? 8 : swatches.length;
+  if (swatches.length !== target) {
+    swatches = Array.from({ length: target }, () => ({ hex: '#888888' }));
+    renderPalette();
+  }
   syncOklchSliders();
   updateOklchScaleUI();
+  previewOklch();
   oklchPanel.classList.add('open');
 }
 
@@ -2654,6 +2838,11 @@ oklchPanel.querySelectorAll('.dir-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     oklchParams.scale = btn.dataset.scale;
     updateOklchScaleUI();
+    const target = (oklchParams.scale === 'lightness' || oklchParams.scale === 'chroma') ? 8 : swatches.length;
+    if (swatches.length !== target) {
+      swatches = Array.from({ length: target }, () => ({ hex: '#888888' }));
+      renderPalette();
+    }
     previewOklch();
   });
 });
@@ -2667,6 +2856,7 @@ document.getElementById('oklch-cancel').addEventListener('click', () => {
 });
 
 document.getElementById('oklch-apply').addEventListener('click', () => {
+  pushHistory();
   closeOklchPanel(false);
   updateURL();
   showToast('Applied');
@@ -2679,6 +2869,48 @@ oklchPanel.addEventListener('click', e => e.stopPropagation());
   const stops = Array.from({length: 13}, (_, i) => oklchToHex(0.65, 0.22, i * 30)).join(',');
   document.getElementById('oklch-gen-hue-track').style.background = `linear-gradient(to right,${stops})`;
 })();
+
+// ── Divider count picker ──────────────────────────────────────────────────────
+
+let dcpAfterIdx = null;
+
+function openCountPicker(afterIdx, triggerBtn) {
+  dcpAfterIdx = afterIdx;
+  const picker = document.getElementById('divider-count-picker');
+  picker.classList.add('open');
+  requestAnimationFrame(() => {
+    const rect = triggerBtn.getBoundingClientRect();
+    const ph = picker.offsetHeight;
+    let top = rect.top - ph - 10;
+    if (top < 8) top = rect.bottom + 10;
+    picker.style.left = (rect.left + rect.width / 2) + 'px';
+    picker.style.top  = top + 'px';
+  });
+}
+
+function closeCountPicker() {
+  document.getElementById('divider-count-picker').classList.remove('open');
+  dcpAfterIdx = null;
+}
+
+(function buildCountPicker() {
+  const picker = document.getElementById('divider-count-picker');
+  for (let n = 1; n <= 8; n++) {
+    const b = document.createElement('button');
+    b.className = 'dcp-btn';
+    b.textContent = n;
+    b.addEventListener('mouseup', e => {
+      e.stopPropagation();
+      if (dcpAfterIdx !== null) insertNSwatches(dcpAfterIdx, n);
+      closeCountPicker();
+    });
+    picker.appendChild(b);
+  }
+})();
+
+document.getElementById('divider-count-picker').addEventListener('click', e => e.stopPropagation());
+document.addEventListener('click', () => closeCountPicker());
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCountPicker(); });
 
 // ─────────────────────────────────────────────────────────────────────────────
 
