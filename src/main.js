@@ -18,4 +18,18 @@ document.getElementById('redo-btn').addEventListener('click', redo);
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 
+window.addEventListener('hashchange', () => {
+  const fromHash = parseHash();
+  if (fromHash) {
+    const currentHash = swatches.map(s => s.hex.slice(1).toLowerCase()).join('-');
+    const newHash = window.location.hash.slice(1).toLowerCase();
+    if (currentHash === newHash) return;
+    setSwatches(fromHash.map(hex => ({ hex })));
+    renderPalette();
+    setActivePalette(null);
+    updateSelectorBtn();
+  }
+});
+
 initPalette();
+
